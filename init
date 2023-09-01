@@ -1,0 +1,56 @@
+#!/bin/sh
+
+mount -t devtmpfs none /dev
+mount -t proc none /proc
+mount -t tmpfs none /tmp -o mode=1777
+mount -t sysfs none /sys
+
+mkdir -p /dev/pts
+
+mount -t devpts none /dev/pts
+
+# Create the new mountpoint in RAM.
+mount -t tmpfs none /mnt
+
+# Create folders for all critical file systems.
+mkdir /mnt/dev
+mkdir /mnt/sys
+mkdir /mnt/proc
+mkdir /mnt/tmp
+
+# Copy root folders in the new mountpoint.
+for dir in */; do
+    case $dir in
+    dev/)
+        # skip
+        ;;
+    proc/)
+        # skip
+        ;;
+    sys/)
+        # skip
+        ;;
+    mnt/)
+        # skip
+        ;;
+    tmp/)
+        # skip
+        ;;
+    *)
+        cp -a $dir /mnt
+        ;;
+    esac
+done
+
+# Move critical file systems to the new mountpoint.
+mount --move /dev /mnt/dev
+mount --move /sys /mnt/sys
+mount --move /proc /mnt/proc
+mount --move /tmp /mnt/tmp
+printf "Mount locations \\e[94m/dev\\e[0m, \\e[94m/sys\\e[0m, \\e[94m/tmp\\e[0m and \\e[94m/proc\\e[0m have been moved to \\e[94m/mnt\\e[0m.\n"
+
+printf "Exiting initramfs\n"
+
+# exec switch_root /mnt /sbin/init_impl
+exec switch_root /mnt /sbin/init
+
