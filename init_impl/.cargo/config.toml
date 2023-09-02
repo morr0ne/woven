@@ -1,0 +1,7 @@
+[build]
+rustflags = [
+    "-C",
+    "target-feature=+crt-static",
+    "-C",
+    "relocation-model=static",
+]
