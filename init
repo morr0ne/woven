@@ -51,6 +51,5 @@ printf "Mount locations \\e[94m/dev\\e[0m, \\e[94m/sys\\e[0m, \\e[94m/tmp\\e[0m 
 
 printf "Exiting initramfs\n"
 
-# exec switch_root /mnt /sbin/init_impl
+# exec switch_root /mnt /system_manager/init
 exec switch_root /mnt /sbin/init
-

@@ -13,8 +13,8 @@ ISOIMAGE=$WORK_DIR/isoimage
 KERNEL_SOURCES=$SRC_DIR/sources/linux/linux-${KERNEL_VERSION}
 BUSYBOX_SOURCES=$SRC_DIR/sources/busybox/busybox-${BUSYBOX_VERSION}
 SYSLINUX_SOURCES=$SRC_DIR/sources/syslinux/syslinux-${SYSLINUX_VERSION}
-INIT_IMPL_SOURCES=$SRC_DIR/init_impl
-INIT_IMPL_TARGET=$INIT_IMPL_SOURCES/target/x86_64-unknown-linux/release
+SYSTEM_MANAGER_SOURCES=$SRC_DIR/system_manager
+SYSTEM_MANAGER_TARGET=$SYSTEM_MANAGER_SOURCES/target/x86_64-unknown-linux/release
 
 build_kernel() {
     # Go into the linux directory
@@ -64,8 +64,8 @@ build_busybox() {
     cd $SRC_DIR
 }
 
-build_init_impl() {
-    cd $INIT_IMPL_SOURCES
+build_system_manager() {
+    cd $SYSTEM_MANAGER_SOURCES
 
     cargo build --release --target x86_64-unknown-linux.json -Zbuild-std=core
 
@@ -100,7 +100,10 @@ create_rootfs() {
     # Copy init files
     cp $SRC_DIR/init .
     cp $SRC_DIR/inittab etc/inittab
-    cp $INIT_IMPL_TARGET/init_impl sbin/init_impl
+
+    # Copy system manager files
+    mkdir system_manager
+    objcopy -R .eh_frame -R .comment $SYSTEM_MANAGER_TARGET/init system_manager/init
 
     rm linuxrc
 
@@ -200,6 +203,6 @@ else
     echo "Skipping busybox build"
 fi
 
-build_init_impl
+build_system_manager
 create_rootfs
 create_iso

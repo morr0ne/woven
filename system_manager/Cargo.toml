@@ -1,5 +1,5 @@
 [package]
-name = "init_impl"
+name = "system-manager"
 version = "0.1.0"
 edition = "2021"
 
@@ -20,3 +20,7 @@ rustix = { version = "0.38.10", default-features = false, features = [
     "stdio",
     "runtime",
 ] }
+
+[[bin]]
+name = "init"
+path = "src/init.rs"
