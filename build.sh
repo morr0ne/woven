@@ -2,7 +2,7 @@
 
 set -e
 
-KERNEL_VERSION=6.4.12
+KERNEL_VERSION=6.5.2
 BUSYBOX_VERSION=1.36.1
 SYSLINUX_VERSION=6.03
 SRC_DIR=$PWD
@@ -14,7 +14,7 @@ KERNEL_SOURCES=$SRC_DIR/sources/linux/linux-${KERNEL_VERSION}
 BUSYBOX_SOURCES=$SRC_DIR/sources/busybox/busybox-${BUSYBOX_VERSION}
 SYSLINUX_SOURCES=$SRC_DIR/sources/syslinux/syslinux-${SYSLINUX_VERSION}
 SYSTEM_MANAGER_SOURCES=$SRC_DIR/system_manager
-SYSTEM_MANAGER_TARGET=$SYSTEM_MANAGER_SOURCES/target/x86_64-unknown-linux/release
+SYSTEM_MANAGER_TARGET=$SYSTEM_MANAGER_SOURCES/target/x86_64-unknown-linux-gnu/release
 
 build_kernel() {
     # Go into the linux directory
@@ -67,7 +67,8 @@ build_busybox() {
 build_system_manager() {
     cd $SYSTEM_MANAGER_SOURCES
 
-    cargo build --release --target x86_64-unknown-linux.json -Zbuild-std=core
+    cargo build --release --target x86_64-unknown-linux-gnu -Zbuild-std=core
+    objcopy -R .eh_frame -R .comment $SYSTEM_MANAGER_TARGET/init
 
     cd $SRC_DIR
 }
