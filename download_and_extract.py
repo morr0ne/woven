@@ -62,11 +62,11 @@ def check_hash(path: str, hash: str) -> bool:
 
 sources = [
     (
-        "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.4.12.tar.xz",
+        "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.5.2.tar.xz",
         "linux.tar.xz",
         "sources/linux",
         "linux kernel sources",
-        "8df063f93942fc139ef520b056f9ada0d9643d580f4b8a3495caf1eb0d1760a3",
+        "f8225794f0d2d8c12870814b6da6d0512e7cacf5e8b9edcdbdaf4f1b413d0f61",
     ),
     (
         "https://busybox.net/downloads/busybox-1.36.1.tar.bz2",
