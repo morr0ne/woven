@@ -5,6 +5,7 @@ set -e
 KERNEL_VERSION=6.5.2
 BUSYBOX_VERSION=1.36.1
 SYSLINUX_VERSION=6.03
+DASH_VERSION=0.5.12
 SRC_DIR=$PWD
 WORK_DIR=$SRC_DIR/work
 ROOTFS=$WORK_DIR/rootfs
@@ -13,6 +14,7 @@ ISOIMAGE=$WORK_DIR/isoimage
 KERNEL_SOURCES=$SRC_DIR/sources/linux/linux-${KERNEL_VERSION}
 BUSYBOX_SOURCES=$SRC_DIR/sources/busybox/busybox-${BUSYBOX_VERSION}
 SYSLINUX_SOURCES=$SRC_DIR/sources/syslinux/syslinux-${SYSLINUX_VERSION}
+DASH_SOURCES=$SRC_DIR/sources/dash/dash-${DASH_VERSION}
 SYSTEM_MANAGER_SOURCES=$SRC_DIR/system_manager
 SYSTEM_MANAGER_TARGET=$SYSTEM_MANAGER_SOURCES/target/x86_64-unknown-linux-gnu/release
 
@@ -64,6 +66,17 @@ build_busybox() {
     cd $SRC_DIR
 }
 
+build_dash() {
+    cd $DASH_SOURCES
+
+    autoreconf -fiv
+    ./configure --enable-static
+
+    make
+
+    cd $SRC_DIR
+}
+
 build_system_manager() {
     cd $SYSTEM_MANAGER_SOURCES
 
@@ -101,6 +114,10 @@ create_rootfs() {
     # Copy init files
     cp $SRC_DIR/init .
     cp $SRC_DIR/inittab etc/inittab
+
+    # Copy shell
+    rm bin/sh
+    cp $DASH_SOURCES/src/dash bin/sh
 
     # Copy system manager files
     mkdir system_manager
@@ -170,8 +187,9 @@ create_iso() {
 DOWNLOAD_SOURCES=true
 BUILD_KERNEL=true
 BUILD_BUSYBOX=true
+BUILD_DASH=true
 
-while getopts "skb" arg; do
+while getopts "skbd" arg; do
     case ${arg} in
     s)
         DOWNLOAD_SOURCES=false
@@ -181,6 +199,9 @@ while getopts "skb" arg; do
         ;;
     b)
         BUILD_BUSYBOX=false
+        ;;
+    d)
+        BUILD_DASH=false
         ;;
     esac
 done
@@ -202,6 +223,12 @@ if $BUILD_BUSYBOX; then
     build_busybox
 else
     echo "Skipping busybox build"
+fi
+
+if $BUILD_DASH; then
+    build_dash
+else
+    echo "Skipping dash build"
 fi
 
 build_system_manager
