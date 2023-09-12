@@ -16,7 +16,12 @@ os.makedirs("sources/tar", exist_ok=True)
 def download_file(url: str, file_name: str, pretty_name: str):
     with open(f"sources/tar/{file_name}", "wb") as file:
         with httpx.stream("GET", url, follow_redirects=True, timeout=None) as response:
-            total = int(response.headers["Content-Length"])
+            total = 0
+
+            try:
+                total = int(response.headers["Content-Length"])
+            except:
+                pass
 
             with Progress(
                 "{task.description} [progress.percentage]{task.percentage:>3.0f}%",
@@ -81,6 +86,13 @@ sources = [
         "sources/syslinux",
         "syslinux sources",
         "ee03a3ec306d0131df30ed59ae0fa77987bb05bfe0a8169b59b4316c016cfdde",
+    ),
+    (
+        "https://git.kernel.org/pub/scm/utils/dash/dash.git/snapshot/dash-0.5.12.tar.gz",
+        "dash.tar.gz",
+        "sources/dash",
+        "dash sources",
+        "f38a283332d2b34058112fe4f06d2148f2318610e08ad23bd70c2e206db505eb",
     ),
 ]
 
