@@ -1,9 +1,9 @@
 ::respawn:/bin/cttyhack /bin/sh
-::sysinit:echo -e "Welcome to Cutiepie Linux"
+::sysinit: -e "Welcome to Cutiepie Linux"
 ::restart:/sbin/init
-::shutdown:echo -e "\nSyncing all file buffers."
+::shutdown:printf -e "\nSyncing all file buffers."
 ::shutdown:sync
-::shutdown:echo "Unmounting all filesystems."
+::shutdown:printf "Unmounting all filesystems."
 ::shutdown:umount -a -r
 ::ctrlaltdel:/sbin/reboot
 tty2::respawn:/bin/sh
