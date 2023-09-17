@@ -33,7 +33,6 @@ unsafe extern "C" fn _start() -> ! {
         rustix::runtime::exit_group(main())
     }
 
-    #[cfg(target_arch = "x86_64")]
     asm!(
         "mov rdi, rsp", // Pass the incoming `rsp` as the arg to `entry`.
         "push rbp",     // Set the return address to zero.
