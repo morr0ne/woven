@@ -10,6 +10,7 @@ SRC_DIR=$PWD
 WORK_DIR=$SRC_DIR/work
 ROOTFS=$WORK_DIR/rootfs
 ISOIMAGE=$WORK_DIR/isoimage
+SCRIPTS=$SRC_DIR/scripts
 
 KERNEL_SOURCES=$SRC_DIR/sources/linux/linux-${KERNEL_VERSION}
 BUSYBOX_SOURCES=$SRC_DIR/sources/busybox/busybox-${BUSYBOX_VERSION}
@@ -29,10 +30,10 @@ build_kernel() {
     make ARCH=x86_64 LLVM=1 defconfig
 
     # Configure the kernel before building
-    ./scripts/config --enable LTO_CLANG_FULL     # Enables full lto with clang
-    ./scripts/config --enable CONFIG_EFI_STUB    # Enable efi stub to allow booting in eufi systems
-    ./scripts/config --enable CONFIG_KERNEL_ZSTD # Enable zstd compression
-    ./scripts/config --enable CONFIG_FB_VESA     # Enable the VESA framebuffer for graphics support.
+    "${SCRIPTS}/config" --enable LTO_CLANG_FULL     # Enables full lto with clang
+    "${SCRIPTS}/config" --enable CONFIG_EFI_STUB    # Enable efi stub to allow booting in eufi systems
+    "${SCRIPTS}/config" --enable CONFIG_KERNEL_ZSTD # Enable zstd compression
+    "${SCRIPTS}/config" --enable CONFIG_FB_VESA     # Enable the VESA framebuffer for graphics support.
 
     # Build the kernel
     # ARCH=x86_64 - Makes sure we build for the correct architecture
@@ -44,6 +45,14 @@ build_kernel() {
     cd $SRC_DIR
 }
 
+set_config_value() {
+    config_name=$1
+    config_content=$2
+    config_path=$3
+
+    sed -i "s|.*$config_name is not set.*|CONFIG_EXTRA_CFLAGS=$config_content|" $config_path
+}
+
 build_busybox() {
     # Go into busybox directory
     cd $BUSYBOX_SOURCES
@@ -52,12 +61,20 @@ build_busybox() {
     make distclean
 
     # Create a default config
-    make defconfig
+    make allnoconfig
 
     # Configure busybox before building
-    sed -i "s|.*CONFIG_EXTRA_CFLAGS.*|CONFIG_EXTRA_CFLAGS=\"-O2\"|" .config # Use compiler optimizations
-    sed -i "s|.*CONFIG_STATIC.*|CONFIG_STATIC=y|" .config                   # Create a static build
-    echo "CONFIG_STATIC_LIBGCC=y" >>.config                                 # Use a static copy of libgcc
+    "${SCRIPTS}/config" --set-str EXTRA_CFLAGS "-O2"
+    "${SCRIPTS}/config" --enable STATIC
+    "${SCRIPTS}/config" --enable INIT
+    "${SCRIPTS}/config" --enable FEATURE_USE_INITTAB
+    "${SCRIPTS}/config" --disable SH_IS_ASH
+    "${SCRIPTS}/config" --enable SH_IS_NONE
+    "${SCRIPTS}/config" --enable CTTYHACK
+    "${SCRIPTS}/config" --enable MOUNT
+    "${SCRIPTS}/config" --enable CP
+    "${SCRIPTS}/config" --enable MKDIR
+    "${SCRIPTS}/config" --enable SWITCH_ROOT
 
     # Build busybox
     make busybox
@@ -70,7 +87,7 @@ build_dash() {
     cd $DASH_SOURCES
 
     autoreconf -fiv
-    ./configure --enable-static
+    ./configure --enable-static CFLAGS="-O2"
 
     make
 
@@ -116,14 +133,11 @@ create_rootfs() {
     cp $SRC_DIR/inittab etc/inittab
 
     # Copy shell
-    rm bin/sh
     cp $DASH_SOURCES/src/dash bin/sh
 
     # Copy system manager files
     mkdir system_manager
     objcopy -R .eh_frame -R .comment $SYSTEM_MANAGER_TARGET/init system_manager/init
-
-    rm linuxrc
 
     # Strip everything
     strip --strip-all $ROOTFS/bin/* $ROOTFS/sbin/*
