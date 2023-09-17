@@ -5,7 +5,6 @@
 #![feature(core_intrinsics)]
 #![feature(naked_functions)]
 
-use rustix::runtime::fork;
 use rustix::{io, process::getpid, stdio::stdout};
 
 #[panic_handler]
@@ -13,8 +12,7 @@ fn panic(_panic: &core::panic::PanicInfo<'_>) -> ! {
     core::intrinsics::abort()
 }
 
-#[no_mangle]
-extern "C" fn main() -> i32 {
+fn main() -> i32 {
     // Check if we are pid one, otherwise exit with code 1
     if !getpid().is_init() {
         // We don't care if there are any io errors since we are just exiting anyway
@@ -23,11 +21,7 @@ extern "C" fn main() -> i32 {
         return 1;
     }
 
-    // loop {}
-
-    // let f = unsafe { fork() };
-
-    0
+    loop {}
 }
 
 #[naked]
