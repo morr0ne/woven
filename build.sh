@@ -140,6 +140,7 @@ create_rootfs() {
     # Copy system manager files
     mkdir system
     cp $SYSTEM_TARGET/init system/init
+    cp $SYSTEM_TARGET/uname system/uname
 
     # Strip everything
     strip --strip-all $ROOTFS/bin/* $ROOTFS/sbin/*
