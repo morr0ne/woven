@@ -101,7 +101,6 @@ build_system() {
     cd $SYSTEM_SOURCES
 
     cargo build --release --target x86_64-unknown-linux-gnu
-    objcopy -R .eh_frame -R .comment $SYSTEM_TARGET/init
 
     cd $SRC_DIR
 }
@@ -140,7 +139,7 @@ create_rootfs() {
 
     # Copy system manager files
     mkdir system
-    objcopy -R .eh_frame -R .comment $SYSTEM_TARGET/init system/init
+    cp $SYSTEM_TARGET/init system/init
 
     # Strip everything
     strip --strip-all $ROOTFS/bin/* $ROOTFS/sbin/*
