@@ -27,7 +27,7 @@ After everything is compiled you should end up with a `cutiepie.iso` file, this 
 
 ### System manager
 
-You might notice there is a folder called system_manager, that is a rather broken and not working attempt at building a simple init system to replace the busybox provided one. It currently doesn't really do anything beside being configured for completely libc free operation.
+You might notice there is a folder called system, that is a rather broken and not working attempt at building a simple init system to replace the busybox provided one. It currently doesn't really do anything beside being configured for completely libc free operation.
 
 # Building requirements
 

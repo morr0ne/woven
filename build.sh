@@ -16,8 +16,8 @@ KERNEL_SOURCES=$SRC_DIR/sources/linux/linux-${KERNEL_VERSION}
 BUSYBOX_SOURCES=$SRC_DIR/sources/busybox/busybox-${BUSYBOX_VERSION}
 SYSLINUX_SOURCES=$SRC_DIR/sources/syslinux/syslinux-${SYSLINUX_VERSION}
 DASH_SOURCES=$SRC_DIR/sources/dash/dash-${DASH_VERSION}
-SYSTEM_MANAGER_SOURCES=$SRC_DIR/system_manager
-SYSTEM_MANAGER_TARGET=$SYSTEM_MANAGER_SOURCES/target/x86_64-unknown-linux-gnu/release
+SYSTEM_SOURCES=$SRC_DIR/system
+SYSTEM_TARGET=$SYSTEM_SOURCES/target/x86_64-unknown-linux-gnu/release
 
 build_kernel() {
     # Go into the linux directory
@@ -96,11 +96,11 @@ build_dash() {
     cd $SRC_DIR
 }
 
-build_system_manager() {
-    cd $SYSTEM_MANAGER_SOURCES
+build_system() {
+    cd $SYSTEM_SOURCES
 
     cargo build --release --target x86_64-unknown-linux-gnu -Zbuild-std=core
-    objcopy -R .eh_frame -R .comment $SYSTEM_MANAGER_TARGET/init
+    objcopy -R .eh_frame -R .comment $SYSTEM_TARGET/init
 
     cd $SRC_DIR
 }
@@ -138,8 +138,8 @@ create_rootfs() {
     cp $DASH_SOURCES/src/dash bin/sh
 
     # Copy system manager files
-    mkdir system_manager
-    objcopy -R .eh_frame -R .comment $SYSTEM_MANAGER_TARGET/init system_manager/init
+    mkdir system
+    objcopy -R .eh_frame -R .comment $SYSTEM_TARGET/init system/init
 
     # Strip everything
     strip --strip-all $ROOTFS/bin/* $ROOTFS/sbin/*
@@ -247,6 +247,6 @@ else
     echo "Skipping dash build"
 fi
 
-build_system_manager
+build_system
 create_rootfs
 create_iso

@@ -51,5 +51,5 @@ printf "Mount locations /dev, /sys, /tmp and /proc have been moved to /mnt.\n"
 
 printf "Exiting initramfs\n"
 
-# exec switch_root /mnt /system_manager/init
+# exec switch_root /mnt /system/init
 exec switch_root /mnt /sbin/init
