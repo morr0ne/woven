@@ -14,8 +14,13 @@ rustix = { version = "0.38.13", default-features = false, features = [
     "process",
     "stdio",
     "runtime",
+    "system",
 ] }
 
 [[bin]]
 name = "init"
 path = "src/init.rs"
+
+[[bin]]
+name = "uname"
+path = "src/uname.rs"
