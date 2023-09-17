@@ -75,6 +75,8 @@ build_busybox() {
     "${SCRIPTS}/config" --enable CP
     "${SCRIPTS}/config" --enable MKDIR
     "${SCRIPTS}/config" --enable SWITCH_ROOT
+    "${SCRIPTS}/config" --enable LS
+    "${SCRIPTS}/config" --enable DU
 
     # Build busybox
     make busybox
