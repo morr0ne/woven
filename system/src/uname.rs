@@ -7,7 +7,7 @@
 
 use rustix::{
     fd::AsFd,
-    io,
+    io::{self, Errno},
     stdio::stdout,
     system::{uname, Uname},
 };
@@ -54,10 +54,8 @@ fn write_uname<Fd: AsFd>(uname: Uname, stdout: Fd) -> io::Result<()> {
 fn write_all<Fd: AsFd>(fd: Fd, mut buf: &[u8]) -> io::Result<()> {
     while !buf.is_empty() {
         match io::write(fd.as_fd(), buf) {
-            Ok(0) => {
-                todo!()
-            }
             Ok(n) => buf = &buf[n..],
+            Err(Errno::INTR) => {}
             Err(e) => return Err(e),
         }
     }
