@@ -100,7 +100,7 @@ build_dash() {
 build_system() {
     cd $SYSTEM_SOURCES
 
-    cargo build --release --target x86_64-unknown-linux-gnu -Zbuild-std=core
+    cargo build --release --target x86_64-unknown-linux-gnu
     objcopy -R .eh_frame -R .comment $SYSTEM_TARGET/init
 
     cd $SRC_DIR
