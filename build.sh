@@ -2,7 +2,7 @@
 
 set -e
 
-KERNEL_VERSION=6.5.3
+KERNEL_VERSION=6.5.7
 BUSYBOX_VERSION=1.36.1
 SYSLINUX_VERSION=6.03
 DASH_VERSION=0.5.12
@@ -77,7 +77,6 @@ build_busybox() {
     "${SCRIPTS}/config" --enable SWITCH_ROOT
     "${SCRIPTS}/config" --enable LS
     "${SCRIPTS}/config" --enable DU
-    "${SCRIPTS}/config" --enable CLEAR
 
     # Build busybox
     make busybox
@@ -134,6 +133,8 @@ create_rootfs() {
     cp $SRC_DIR/init .
     cp $SRC_DIR/inittab etc/inittab
 
+    cp $SRC_DIR/temp/btm bin/btm
+
     # Copy shell
     cp $DASH_SOURCES/src/dash bin/sh
 
@@ -141,6 +142,7 @@ create_rootfs() {
     mkdir system
     cp $SYSTEM_TARGET/init system/init
     cp $SYSTEM_TARGET/uname system/uname
+    cp $SYSTEM_TARGET/clear system/clear
 
     # Strip everything
     strip --strip-all $ROOTFS/bin/* $ROOTFS/sbin/*
@@ -225,7 +227,7 @@ done
 
 if $DOWNLOAD_SOURCES; then
     rm -rf $WORK_DIR
-    python download_and_extract.py
+    pipenv run python download_and_extract.py
 else
     echo "Skipping sources download"
 fi
