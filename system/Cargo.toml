@@ -15,6 +15,7 @@ rustix = { version = "0.38.13", default-features = false, features = [
     "stdio",
     "runtime",
     "system",
+    "thread",
 ] }
 
 [[bin]]
@@ -24,3 +25,7 @@ path = "src/init.rs"
 [[bin]]
 name = "uname"
 path = "src/uname.rs"
+
+[[bin]]
+name = "clear"
+path = "src/clear.rs"
