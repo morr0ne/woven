@@ -10,7 +10,7 @@ strip = true
 panic = "abort"
 
 [dependencies]
-rustix = { version = "0.38.13", default-features = false, features = [
+rustix = { version = "0.38.19", default-features = false, features = [
     "process",
     "stdio",
     "runtime",
