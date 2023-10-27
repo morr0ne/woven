@@ -134,7 +134,7 @@ create_rootfs() {
     cp $SRC_DIR/init .
     cp $SRC_DIR/inittab etc/inittab
 
-    cp $SRC_DIR/temp/btm bin/btm
+    # cp $SRC_DIR/temp/btm bin/btm
 
     # Copy shell
     cp $DASH_SOURCES/src/dash bin/sh
