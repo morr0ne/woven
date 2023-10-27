@@ -5,7 +5,15 @@
 #![feature(core_intrinsics)]
 #![feature(naked_functions)]
 
-use rustix::{io, process::getpid, stdio::stdout};
+use core::ffi::CStr;
+
+use rustix::{
+    io,
+    process::{getpid, waitpid, WaitOptions},
+    runtime::{execve, fork},
+    stdio::stdout,
+    thread::{nanosleep, Timespec},
+};
 
 #[panic_handler]
 fn panic(_panic: &core::panic::PanicInfo<'_>) -> ! {
@@ -21,7 +29,40 @@ fn main() -> i32 {
         return 1;
     }
 
-    loop {}
+    unsafe {
+        execve(
+            CStr::from_bytes_with_nul_unchecked(b"/bin/sh\0"),
+            [].as_ptr(),
+            [].as_ptr(),
+        );
+    };
+
+    0
+
+    // let pid = unsafe { fork() };
+
+    // if let Ok(None) = pid {
+    //     unsafe {
+    //         execve(
+    //             CStr::from_bytes_with_nul_unchecked(b"/bin/sh\0"),
+    //             [].as_ptr(),
+    //             [].as_ptr(),
+    //         );
+    //     }
+    // }
+
+    // loop {
+    //     sleep()
+    // }
+}
+
+fn sleep() {
+    let timespec = Timespec {
+        tv_sec: 1,
+        tv_nsec: 0,
+    };
+
+    let _ = nanosleep(&timespec);
 }
 
 #[naked]
