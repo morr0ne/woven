@@ -77,6 +77,7 @@ build_busybox() {
     "${SCRIPTS}/config" --enable SWITCH_ROOT
     "${SCRIPTS}/config" --enable LS
     "${SCRIPTS}/config" --enable DU
+    "${SCRIPTS}/config" --enable WHICH
 
     # Build busybox
     make busybox
