@@ -2,7 +2,7 @@
 
 set -e
 
-KERNEL_VERSION=6.5.7
+KERNEL_VERSION=6.6.4
 BUSYBOX_VERSION=1.36.1
 SYSLINUX_VERSION=6.03
 DASH_VERSION=0.5.12
@@ -233,6 +233,8 @@ else
     echo "Skipping sources download"
 fi
 
+BUILD_START=$(date +%s)
+
 if $BUILD_KERNEL; then
     build_kernel
 else
@@ -254,3 +256,6 @@ fi
 build_system
 create_rootfs
 create_iso
+
+BUILD_END=$(date +%s)
+printf "Built cutiepie iso in %s seconds\n" $(($BUILD_END - $BUILD_START))
