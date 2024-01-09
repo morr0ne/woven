@@ -2,10 +2,10 @@
 
 set -e
 
-KERNEL_VERSION=6.6.4
+KERNEL_VERSION=6.7
 BUSYBOX_VERSION=1.36.1
-SYSLINUX_VERSION=6.03
 DASH_VERSION=0.5.12
+LIMINE_VERSION=6.20231210.0
 SRC_DIR=$PWD
 WORK_DIR=$SRC_DIR/work
 ROOTFS=$WORK_DIR/rootfs
@@ -14,8 +14,8 @@ SCRIPTS=$SRC_DIR/scripts
 
 KERNEL_SOURCES=$SRC_DIR/sources/linux/linux-${KERNEL_VERSION}
 BUSYBOX_SOURCES=$SRC_DIR/sources/busybox/busybox-${BUSYBOX_VERSION}
-SYSLINUX_SOURCES=$SRC_DIR/sources/syslinux/syslinux-${SYSLINUX_VERSION}
 DASH_SOURCES=$SRC_DIR/sources/dash/dash-${DASH_VERSION}
+LIMINE_SOURCES=$SRC_DIR/sources/limine/limine-${LIMINE_VERSION}
 SYSTEM_SOURCES=$SRC_DIR/system
 SYSTEM_TARGET=$SYSTEM_SOURCES/target/x86_64-unknown-linux-gnu/release
 
@@ -30,16 +30,20 @@ build_kernel() {
     make ARCH=x86_64 LLVM=1 defconfig
 
     # Configure the kernel before building
-    "${SCRIPTS}/config" --enable LTO_CLANG_FULL     # Enables full lto with clang
-    "${SCRIPTS}/config" --enable CONFIG_EFI_STUB    # Enable efi stub to allow booting in eufi systems
-    "${SCRIPTS}/config" --enable CONFIG_KERNEL_ZSTD # Enable zstd compression
-    "${SCRIPTS}/config" --enable CONFIG_FB_VESA     # Enable the VESA framebuffer for graphics support.
+    "${SCRIPTS}/config" --enable LTO_CLANG_FULL             # Enables full lto with clang
+    "${SCRIPTS}/config" --enable CONFIG_KERNEL_ZSTD         # Enable zstd compression
+    "${SCRIPTS}/config" --enable CONFIG_FB                  # Enable zstd compression
+    "${SCRIPTS}/config" --enable CONFIG_FB_VESA             # Enable zstd compression
+    "${SCRIPTS}/config" --enable CONFIG_FB_EFI              # Enable zstd compression
+    "${SCRIPTS}/config" --enable CONFIG_FB_CORE             # Enable zstd compression
+    "${SCRIPTS}/config" --enable CONFIG_FRAMEBUFFER_CONSOLE # Enable zstd compression
+
+    make olddefconfig
+
+    # exit
 
     # Build the kernel
-    # ARCH=x86_64 - Makes sure we build for the correct architecture
-    # LLVM=1 - Uses clang and other llvm utilities instead of gcc and gnu's binutils
-    # KCFLAGS="-O2" - Additional compiler flags, -O2 optimizes for performance
-    make ARCH=x86_64 LLVM=1 KCFLAGS="-O2" bzImage
+    make bzImage
 
     # Go back to src before exiting
     cd $SRC_DIR
@@ -101,6 +105,16 @@ build_system() {
     cd $SYSTEM_SOURCES
 
     cargo build --release --target x86_64-unknown-linux-gnu
+
+    cd $SRC_DIR
+}
+
+build_limine() {
+    cd $LIMINE_SOURCES
+
+    ./configure --enable-all
+
+    make
 
     cd $SRC_DIR
 }
@@ -169,36 +183,24 @@ create_iso() {
     # Copy the initramfs image
     cp $WORK_DIR/rootfs.cpio.zst $ISOIMAGE/boot/rootfs.zst
 
-    # Create a directry for all the syslinux files
-    mkdir -p $ISOIMAGE/boot/syslinux
+    # Copy all limine stuff
+    cp $LIMINE_SOURCES/bin/limine-uefi-cd.bin $ISOIMAGE/boot
+    cp $LIMINE_SOURCES/bin/limine-bios-cd.bin $ISOIMAGE/boot
+    cp $LIMINE_SOURCES/bin/limine-bios.sys $ISOIMAGE/boot
+    cp limine.cfg $ISOIMAGE/boot
 
-    # Copy all the syslinux files
-    cp $SYSLINUX_SOURCES/bios/core/isolinux.bin $ISOIMAGE/boot/syslinux                 # Sylinux boot files
-    cp $SYSLINUX_SOURCES/bios/com32/elflink/ldlinux/ldlinux.c32 $ISOIMAGE/boot/syslinux # Helper file required by syslinux
-    cp $SYSLINUX_SOURCES/bios/com32/libutil/libutil.c32 $ISOIMAGE/boot/syslinux         # Helper file required by menu.c32
-    cp $SYSLINUX_SOURCES/bios/com32/menu/menu.c32 $ISOIMAGE/boot/syslinux               # File containing the syslinux text menu
-    cp $SRC_DIR/syslinux.cfg $ISOIMAGE/boot/syslinux/                                   # Sylinux config file
+    mkdir -p $ISOIMAGE/EFI/BOOT
+    cp $LIMINE_SOURCES/bin/BOOTX64.EFI $ISOIMAGE/EFI/BOOT
 
-    # Now we generate 'hybrid' ISO image file which can also be used on
-    # USB flash drive, e.g. 'dd if=minimal_linux_live.iso of=/dev/sdb'.
-    xorriso -as mkisofs \
-        -isohybrid-mbr $SRC_DIR/sources/syslinux/syslinux-*/bios/mbr/isohdpfx.bin \
-        -c boot/syslinux/boot.cat \
-        -b boot/syslinux/isolinux.bin \
-        -no-emul-boot \
-        -boot-load-size 4 \
-        -boot-info-table \
-        -o $SRC_DIR/cutiepie.iso \
-        $ISOIMAGE
+    # Create iso
+    xorriso -as mkisofs -b boot/limine-bios-cd.bin \
+        -no-emul-boot -boot-load-size 4 -boot-info-table \
+        --efi-boot boot/limine-uefi-cd.bin \
+        -efi-boot-part --efi-boot-image --protective-msdos-label \
+        $ISOIMAGE -o $SRC_DIR/cutiepie.iso
 
-    # xorriso -as mkisofs \
-    #     -isohybrid-mbr $WORK_DIR/syslinux/syslinux-*/bios/mbr/isohdpfx.bin \
-    #     -c boot/boot.cat \
-    #     -e boot/uefi.img \
-    #     -no-emul-boot \
-    #     -isohybrid-gpt-basdat \
-    #     -o $SRC_DIR/minimal_linux_live.iso \
-    #     $ISOIMAGE
+    # Ensure the iso is bootable
+    $LIMINE_SOURCES/bin/limine bios-install cutiepie.iso
 
     cd $SRC_DIR
 
@@ -254,6 +256,7 @@ else
 fi
 
 build_system
+build_limine
 create_rootfs
 create_iso
 
