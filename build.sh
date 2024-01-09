@@ -5,7 +5,7 @@ set -e
 KERNEL_VERSION=6.7
 BUSYBOX_VERSION=1.36.1
 DASH_VERSION=0.5.12
-LIMINE_VERSION=6.20231210.0
+LIMINE_VERSION=6.20240107.0
 SRC_DIR=$PWD
 WORK_DIR=$SRC_DIR/work
 ROOTFS=$WORK_DIR/rootfs
@@ -43,7 +43,7 @@ build_kernel() {
     # exit
 
     # Build the kernel
-    make bzImage
+    make bzImage -j$(nproc)
 
     # Go back to src before exiting
     cd $SRC_DIR
@@ -82,9 +82,11 @@ build_busybox() {
     "${SCRIPTS}/config" --enable LS
     "${SCRIPTS}/config" --enable DU
     "${SCRIPTS}/config" --enable WHICH
+    "${SCRIPTS}/config" --enable DMESG
+    "${SCRIPTS}/config" --enable LESS
 
     # Build busybox
-    make busybox
+    make busybox -j$(nproc)
 
     # Go back to src before exiting
     cd $SRC_DIR

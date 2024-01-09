@@ -74,7 +74,7 @@ sources = [
         "944c04e74f9bcbfccb98cf05470bce5b2de2c6cfaa79e91b032bf45832e1daed",
     ),
     (
-        "https://busybox.net/downloads/busybox-1.36.1.tar.bz2",
+        "http://sources.buildroot.net/busybox/busybox-1.36.1.tar.bz2",
         "busybox.tar.bz2",
         "sources/busybox",
         "busybox sources",
@@ -88,11 +88,11 @@ sources = [
         "f38a283332d2b34058112fe4f06d2148f2318610e08ad23bd70c2e206db505eb",
     ),
     (
-        "https://github.com/limine-bootloader/limine/releases/download/v6.20231210.0/limine-6.20231210.0.tar.xz",
+        "https://github.com/limine-bootloader/limine/releases/download/v6.20240107.0/limine-6.20240107.0.tar.xz",
         "limine.tar.xz",
         "sources/limine",
         "limine sources",
-        "aed85944192eb436341ba48278ade0ce7d2fa048ee813a82947a0c86678c40d5",
+        "e2037a1784237dabda868bc2cfe7cd954d24ea957f937de6786fdf70a0dad26d",
     ),
     (
         "https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/snapshot/linux-firmware-20231211.tar.gz",
