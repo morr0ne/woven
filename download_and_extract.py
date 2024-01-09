@@ -67,11 +67,11 @@ def check_hash(path: str, hash: str) -> bool:
 
 sources = [
     (
-        "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.6.4.tar.xz",
+        "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.7.tar.xz",
         "linux.tar.xz",
         "sources/linux",
         "linux kernel sources",
-        "6ae228e417d8eb745994ddd2a2132753277599ad56743d17b5d9a833acb23de1",
+        "944c04e74f9bcbfccb98cf05470bce5b2de2c6cfaa79e91b032bf45832e1daed",
     ),
     (
         "https://busybox.net/downloads/busybox-1.36.1.tar.bz2",
@@ -81,21 +81,27 @@ sources = [
         "dfdfc1b9aa41d5134e087d904c0a5f6958825f0e94db1d2cb5ea93088247c886",
     ),
     (
-        "https://cdn.kernel.org/pub/linux/utils/boot/syslinux/syslinux-6.03.tar.xz",
-        "syslinux.tar.xz",
-        "sources/syslinux",
-        "syslinux sources",
-        "ee03a3ec306d0131df30ed59ae0fa77987bb05bfe0a8169b59b4316c016cfdde",
-    ),
-    (
         "https://git.kernel.org/pub/scm/utils/dash/dash.git/snapshot/dash-0.5.12.tar.gz",
         "dash.tar.gz",
         "sources/dash",
         "dash sources",
         "f38a283332d2b34058112fe4f06d2148f2318610e08ad23bd70c2e206db505eb",
     ),
+    (
+        "https://github.com/limine-bootloader/limine/releases/download/v6.20231210.0/limine-6.20231210.0.tar.xz",
+        "limine.tar.xz",
+        "sources/limine",
+        "limine sources",
+        "aed85944192eb436341ba48278ade0ce7d2fa048ee813a82947a0c86678c40d5",
+    ),
+    (
+        "https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/snapshot/linux-firmware-20231211.tar.gz",
+        "linux-firmware.tar.xz",
+        "sources/linux-firmware",
+        "linux firmware sources",
+        "15a36a9797374d5e1ef495ccb484d4dd70f2acd8204a441d2c22c17daa838a21",
+    ),
 ]
-
 
 for url, file_name, path, pretty_name, hash in sources:
     if os.path.isfile(f"sources/tar/{file_name}") and check_hash(
