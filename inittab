@@ -1,16 +1,11 @@
-::respawn:/bin/cttyhack /bin/sh
-::sysinit: -e "Welcome to Cutiepie Linux"
-::restart:/sbin/init
-::shutdown:printf -e "\nSyncing all file buffers."
-::shutdown:sync
-::shutdown:printf "Unmounting all filesystems."
-::shutdown:umount -a -r
-::ctrlaltdel:/sbin/reboot
+tty1::respawn:/bin/sh
 tty2::respawn:/bin/sh
 tty3::respawn:/bin/sh
 tty4::respawn:/bin/sh
-
-# tty1::respawn:/sbin/getty -l /bin/sh 38400 tty1 linux 
-# tty2::respawn:/sbin/getty -l /bin/sh 38400 tty2 linux
-# tty3::respawn:/sbin/getty -l /bin/sh 38400 tty3 linux
-# tty4::respawn:/sbin/getty -l /bin/sh 38400 tty4 linux
+::sysinit:printf -e "Welcome to Cutiepie Linux"
+# ::restart:/sbin/init
+# ::shutdown:printf -e "\nSyncing all file buffers."
+# ::shutdown:sync
+# ::shutdown:printf "Unmounting all filesystems."
+# ::shutdown:umount -a -r
+# ::ctrlaltdel:/sbin/reboot
