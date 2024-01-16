@@ -88,18 +88,18 @@ sources = [
         "f38a283332d2b34058112fe4f06d2148f2318610e08ad23bd70c2e206db505eb",
     ),
     (
-        "https://github.com/limine-bootloader/limine/releases/download/v6.20240107.0/limine-6.20240107.0.tar.xz",
+        "https://github.com/limine-bootloader/limine/releases/download/v7.0.0/limine-7.0.0.tar.xz",
         "limine.tar.xz",
         "sources/limine",
         "limine sources",
-        "e2037a1784237dabda868bc2cfe7cd954d24ea957f937de6786fdf70a0dad26d",
+        "ee76e738d4a4037af09474b3a131cae0e75be0a26641475d6239dd21b236aa85",
     ),
     (
-        "https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/snapshot/linux-firmware-20231211.tar.gz",
+        "https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/snapshot/linux-firmware-20240115.tar.gz",
         "linux-firmware.tar.xz",
         "sources/linux-firmware",
         "linux firmware sources",
-        "15a36a9797374d5e1ef495ccb484d4dd70f2acd8204a441d2c22c17daa838a21",
+        "b804c22a56dbefc7e291ef69c295651e71d1c9c808795f9ce09aba2debf9ce14",
     ),
 ]
 
