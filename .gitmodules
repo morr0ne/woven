@@ -1,0 +1,5 @@
+[submodule "thirdparty/linux"]
+	path = thirdparty/linux
+	url = git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+	branch = linux-6.7.y
+	shallow = true
