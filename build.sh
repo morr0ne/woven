@@ -6,6 +6,7 @@ KERNEL_VERSION=6.7.4
 BUSYBOX_VERSION=1.36.1
 DASH_VERSION=0.5.12
 LIMINE_VERSION=7.0.3
+LLVM_VERSION=17.0.6
 SRC_DIR=$PWD
 WORK_DIR=$SRC_DIR/work
 ROOTFS=$WORK_DIR/rootfs
@@ -16,6 +17,7 @@ KERNEL_SOURCES=$SRC_DIR/sources/linux/linux-${KERNEL_VERSION}
 BUSYBOX_SOURCES=$SRC_DIR/sources/busybox/busybox-${BUSYBOX_VERSION}
 DASH_SOURCES=$SRC_DIR/sources/dash/dash-${DASH_VERSION}
 LIMINE_SOURCES=$SRC_DIR/sources/limine/limine-${LIMINE_VERSION}
+LLVM_BIN=$SRC_DIR/tools/llvm/llvm-${LLVM_VERSION}-x86_64/bin/
 SYSTEM_SOURCES=$SRC_DIR/system
 SYSTEM_TARGET=$SYSTEM_SOURCES/target/x86_64-unknown-linux-gnu/release
 
@@ -27,7 +29,7 @@ build_kernel() {
     make mrproper
 
     # Create a default config for amd64 that uses clang to build
-    make ARCH=x86_64 LLVM=1 defconfig
+    make ARCH=x86_64 LLVM=$LLVM_BIN defconfig
 
     # Configure the kernel before building
     "${SCRIPTS}/config" --enable LTO_CLANG_FULL             # Enables full lto with clang

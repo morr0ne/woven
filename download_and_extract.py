@@ -95,6 +95,13 @@ sources = [
         "2aa474bce4d2f338ff783edb9d49fa4bf389d08e376121ca3360e27a093de3f3",
     ),
     (
+        "https://cdn.kernel.org/pub/tools/llvm/files/llvm-17.0.6-x86_64.tar.xz",
+        "llvm.tar.xz",
+        "tools/llvm",
+        "llvm sources",
+        "1690e309a0261c42f042eedf9b968c64e4c21e49d99b835b0a3c530daae441e5",
+    ),
+    (
         "https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/snapshot/linux-firmware-20240115.tar.gz",
         "linux-firmware.tar.xz",
         "sources/linux-firmware",
@@ -102,6 +109,7 @@ sources = [
         "b804c22a56dbefc7e291ef69c295651e71d1c9c808795f9ce09aba2debf9ce14",
     ),
 ]
+
 
 for url, file_name, path, pretty_name, hash in sources:
     if os.path.isfile(f"sources/tar/{file_name}") and check_hash(
