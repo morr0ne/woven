@@ -67,11 +67,11 @@ def check_hash(path: str, hash: str) -> bool:
 
 sources = [
     (
-        "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.7.1.tar.xz",
+        "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.7.4.tar.xz",
         "linux.tar.xz",
         "sources/linux",
         "linux kernel sources",
-        "43e9150a958f8a9538d9b0d749de196c5c57ed316958ff87641fbcd52d30cddc",
+        "c68379dfafc3fd4e531bea8d6dd523e9daa1dc3ac0c7d1c51e7e2fca84f5500a",
     ),
     (
         "http://sources.buildroot.net/busybox/busybox-1.36.1.tar.bz2",
@@ -88,11 +88,11 @@ sources = [
         "f38a283332d2b34058112fe4f06d2148f2318610e08ad23bd70c2e206db505eb",
     ),
     (
-        "https://github.com/limine-bootloader/limine/releases/download/v7.0.1/limine-7.0.1.tar.xz",
+        "https://github.com/limine-bootloader/limine/releases/download/v7.0.3/limine-7.0.3.tar.xz",
         "limine.tar.xz",
         "sources/limine",
         "limine sources",
-        "5db2b231bdb19d68a95b41b7f98212c71e1664f55d180cb731f2278227ec2183",
+        "2aa474bce4d2f338ff783edb9d49fa4bf389d08e376121ca3360e27a093de3f3",
     ),
     (
         "https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/snapshot/linux-firmware-20240115.tar.gz",
