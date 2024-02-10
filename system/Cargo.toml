@@ -23,6 +23,11 @@ name = "init"
 path = "src/init.rs"
 
 [[bin]]
+name = "raminit"
+path = "src/raminit.rs"
+
+
+[[bin]]
 name = "uname"
 path = "src/uname.rs"
 
