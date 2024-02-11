@@ -160,6 +160,7 @@ create_rootfs() {
     # Copy system manager files
     mkdir system
     cp $SYSTEM_TARGET/init system/init
+    cp $SYSTEM_TARGET/raminit system/raminit
     cp $SYSTEM_TARGET/uname system/uname
     cp $SYSTEM_TARGET/clear system/clear
 
