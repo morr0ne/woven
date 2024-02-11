@@ -51,14 +51,6 @@ build_kernel() {
     cd $SRC_DIR
 }
 
-set_config_value() {
-    config_name=$1
-    config_content=$2
-    config_path=$3
-
-    sed -i "s|.*$config_name is not set.*|CONFIG_EXTRA_CFLAGS=$config_content|" $config_path
-}
-
 build_busybox() {
     # Go into busybox directory
     cd $BUSYBOX_SOURCES
