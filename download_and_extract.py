@@ -67,11 +67,11 @@ def check_hash(path: str, hash: str) -> bool:
 
 sources = [
     (
-        "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.7.4.tar.xz",
+        "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.7.5.tar.xz",
         "linux.tar.xz",
         "sources/linux",
         "linux kernel sources",
-        "c68379dfafc3fd4e531bea8d6dd523e9daa1dc3ac0c7d1c51e7e2fca84f5500a",
+        "125bed4991990ef8b7ce3629341e3ec28eb04c1c9f0452787e0f42ce525497a4",
     ),
     (
         "http://sources.buildroot.net/busybox/busybox-1.36.1.tar.bz2",
@@ -88,11 +88,11 @@ sources = [
         "f38a283332d2b34058112fe4f06d2148f2318610e08ad23bd70c2e206db505eb",
     ),
     (
-        "https://github.com/limine-bootloader/limine/releases/download/v7.0.3/limine-7.0.3.tar.xz",
+        "https://github.com/limine-bootloader/limine/releases/download/v7.0.5/limine-7.0.5.tar.xz",
         "limine.tar.xz",
         "sources/limine",
         "limine sources",
-        "2aa474bce4d2f338ff783edb9d49fa4bf389d08e376121ca3360e27a093de3f3",
+        "1c2fa29c9ddfa510a338ccb6b8764b9acdf948405f231e2ef316a03a1f04a7e0",
     ),
     (
         "https://cdn.kernel.org/pub/tools/llvm/files/llvm-17.0.6-x86_64.tar.xz",
@@ -101,13 +101,13 @@ sources = [
         "llvm sources",
         "1690e309a0261c42f042eedf9b968c64e4c21e49d99b835b0a3c530daae441e5",
     ),
-    (
-        "https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/snapshot/linux-firmware-20240115.tar.gz",
-        "linux-firmware.tar.xz",
-        "sources/linux-firmware",
-        "linux firmware sources",
-        "b804c22a56dbefc7e291ef69c295651e71d1c9c808795f9ce09aba2debf9ce14",
-    ),
+    # (
+    #     "https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/snapshot/linux-firmware-20240115.tar.gz",
+    #     "linux-firmware.tar.xz",
+    #     "sources/linux-firmware",
+    #     "linux firmware sources",
+    #     "b804c22a56dbefc7e291ef69c295651e71d1c9c808795f9ce09aba2debf9ce14",
+    # ),
 ]
 
 
