@@ -42,7 +42,6 @@ def download_file(url: str, file_name: str, pretty_name: str):
 def extract_file(file_name: str, path: str, pretty_name: str):
     try:
         shutil.rmtree(path)
-        print("Removing old extracted sources...")
     except:
         pass
 
@@ -60,18 +59,23 @@ def extract_file(file_name: str, path: str, pretty_name: str):
                 tar.extract(member, path)
                 progress.update(extract_task, advance=1)
 
+    open(f"{path}/.ok", "w").close()
+
 
 def check_hash(path: str, hash: str) -> bool:
-    return os.popen(f"b3sum --no-names {path}").read().strip() == hash
+    return (
+        os.path.isfile(path)
+        and os.popen(f"b3sum --no-names {path}").read().strip() == hash
+    )
 
 
 sources = [
     (
-        "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.7.5.tar.xz",
+        "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.7.6.tar.xz",
         "linux.tar.xz",
         "sources/linux",
         "linux kernel sources",
-        "125bed4991990ef8b7ce3629341e3ec28eb04c1c9f0452787e0f42ce525497a4",
+        "562759202d647179d453bdfa7738a1ac7a699a26e876275fff656532219d17f3",
     ),
     (
         "http://sources.buildroot.net/busybox/busybox-1.36.1.tar.bz2",
@@ -112,11 +116,11 @@ sources = [
 
 
 for url, file_name, path, pretty_name, hash in sources:
-    if os.path.isfile(f"sources/tar/{file_name}") and check_hash(
-        f"sources/tar/{file_name}", hash
-    ):
-        print(f"File {file_name} exists already, skipping download")
-    else:
+    if not check_hash(f"sources/tar/{file_name}", hash):
         download_file(url, file_name, pretty_name)
 
-    extract_file(file_name, path, pretty_name)
+    if not os.path.isfile(f"{path}/.ok"):
+        extract_file(file_name, path, pretty_name)
+
+
+print("Sources OK")

@@ -2,7 +2,7 @@
 
 set -e
 
-KERNEL_VERSION=6.7.5
+KERNEL_VERSION=6.7.6
 BUSYBOX_VERSION=1.36.1
 DASH_VERSION=0.5.12
 LIMINE_VERSION=7.0.5
@@ -225,12 +225,7 @@ while getopts "skbd" arg; do
     esac
 done
 
-if $DOWNLOAD_SOURCES; then
-    rm -rf $WORK_DIR
-    pipenv run python download_and_extract.py
-else
-    echo "Skipping sources download"
-fi
+pipenv run python download_and_extract.py
 
 BUILD_START=$(date +%s)
 
