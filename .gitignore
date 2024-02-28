@@ -4,5 +4,5 @@ tmp
 work
 cutiepie.iso
 OVMF_VARS.fd
-system/target
+target
 tools

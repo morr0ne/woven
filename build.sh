@@ -18,8 +18,7 @@ BUSYBOX_SOURCES=$SRC_DIR/sources/busybox/busybox-${BUSYBOX_VERSION}
 DASH_SOURCES=$SRC_DIR/sources/dash/dash-${DASH_VERSION}
 LIMINE_SOURCES=$SRC_DIR/sources/limine/limine-${LIMINE_VERSION}
 LLVM_BIN=$SRC_DIR/tools/llvm/llvm-${LLVM_VERSION}-x86_64/bin/
-SYSTEM_SOURCES=$SRC_DIR/system
-SYSTEM_TARGET=$SYSTEM_SOURCES/target/x86_64-unknown-linux-gnu/release
+SYSTEM_TARGET=$SRC_DIR/target/x86_64-unknown-linux-gnu/release
 
 build_kernel() {
     # Go into the linux directory
@@ -96,11 +95,9 @@ build_dash() {
 }
 
 build_system() {
-    cd $SYSTEM_SOURCES
 
     cargo build --release --target x86_64-unknown-linux-gnu
 
-    cd $SRC_DIR
 }
 
 build_limine() {
