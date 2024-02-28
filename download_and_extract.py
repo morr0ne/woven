@@ -103,7 +103,7 @@ sources = [
         "llvm.tar.xz",
         "tools/llvm",
         "llvm sources",
-        "1690e309a0261c42f042eedf9b968c64e4c21e49d99b835b0a3c530daae441e5",
+        "3b31eb5e6fe253e336608a1db2a0f6811494afae89e7409c331c5230a699f00e",
     ),
     # (
     #     "https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/snapshot/linux-firmware-20240115.tar.gz",
