@@ -25,19 +25,21 @@ build_kernel() {
     # Go into the linux directory
     cd $KERNEL_SOURCES
 
-    # Create a default config for amd64 that uses clang to build
-    make ARCH=x86_64 LLVM=$LLVM_BIN defconfig
+    if [ ! -f "$KERNEL_SOURCES"/.config ]; then
+        # Create a default config for amd64 that uses clang to build
+        make ARCH=x86_64 LLVM=$LLVM_BIN defconfig
 
-    # Configure the kernel before building
-    "${SCRIPTS}/config" --enable LTO_CLANG_FULL             # Enables full lto with clang
-    "${SCRIPTS}/config" --enable CONFIG_KERNEL_ZSTD         # Enable zstd compression
-    "${SCRIPTS}/config" --enable CONFIG_FB                  # Enable zstd compression
-    "${SCRIPTS}/config" --enable CONFIG_FB_VESA             # Enable zstd compression
-    "${SCRIPTS}/config" --enable CONFIG_FB_EFI              # Enable zstd compression
-    "${SCRIPTS}/config" --enable CONFIG_FB_CORE             # Enable zstd compression
-    "${SCRIPTS}/config" --enable CONFIG_FRAMEBUFFER_CONSOLE # Enable zstd compression
+        # Configure the kernel before building
+        "${SCRIPTS}/config" --enable LTO_CLANG_FULL             # Enables full lto with clang
+        "${SCRIPTS}/config" --enable CONFIG_KERNEL_ZSTD         # Enable zstd compression
+        "${SCRIPTS}/config" --enable CONFIG_FB                  # Enable zstd compression
+        "${SCRIPTS}/config" --enable CONFIG_FB_VESA             # Enable zstd compression
+        "${SCRIPTS}/config" --enable CONFIG_FB_EFI              # Enable zstd compression
+        "${SCRIPTS}/config" --enable CONFIG_FB_CORE             # Enable zstd compression
+        "${SCRIPTS}/config" --enable CONFIG_FRAMEBUFFER_CONSOLE # Enable zstd compression
 
-    make olddefconfig
+        make olddefconfig
+    fi
 
     # Build the kernel
     make bzImage -j$(nproc)
@@ -50,26 +52,28 @@ build_busybox() {
     # Go into busybox directory
     cd $BUSYBOX_SOURCES
 
-    # Create a default config
-    make allnoconfig
+    if [ ! -f "$BUSYBOX_SOURCES"/.config ]; then
+        # Create a default config
+        make allnoconfig
 
-    # Configure busybox before building
-    "${SCRIPTS}/config" --set-str EXTRA_CFLAGS "-O2"
-    "${SCRIPTS}/config" --enable STATIC
-    "${SCRIPTS}/config" --enable INIT
-    "${SCRIPTS}/config" --enable FEATURE_USE_INITTAB
-    "${SCRIPTS}/config" --disable SH_IS_ASH
-    "${SCRIPTS}/config" --enable SH_IS_NONE
-    "${SCRIPTS}/config" --enable CTTYHACK
-    "${SCRIPTS}/config" --enable MOUNT
-    "${SCRIPTS}/config" --enable CP
-    "${SCRIPTS}/config" --enable MKDIR
-    "${SCRIPTS}/config" --enable SWITCH_ROOT
-    "${SCRIPTS}/config" --enable LS
-    "${SCRIPTS}/config" --enable DU
-    "${SCRIPTS}/config" --enable WHICH
-    "${SCRIPTS}/config" --enable DMESG
-    "${SCRIPTS}/config" --enable LESS
+        # Configure busybox before building
+        "${SCRIPTS}/config" --set-str EXTRA_CFLAGS "-O2"
+        "${SCRIPTS}/config" --enable STATIC
+        "${SCRIPTS}/config" --enable INIT
+        "${SCRIPTS}/config" --enable FEATURE_USE_INITTAB
+        "${SCRIPTS}/config" --disable SH_IS_ASH
+        "${SCRIPTS}/config" --enable SH_IS_NONE
+        "${SCRIPTS}/config" --enable CTTYHACK
+        "${SCRIPTS}/config" --enable MOUNT
+        "${SCRIPTS}/config" --enable CP
+        "${SCRIPTS}/config" --enable MKDIR
+        "${SCRIPTS}/config" --enable SWITCH_ROOT
+        "${SCRIPTS}/config" --enable LS
+        "${SCRIPTS}/config" --enable DU
+        "${SCRIPTS}/config" --enable WHICH
+        "${SCRIPTS}/config" --enable DMESG
+        "${SCRIPTS}/config" --enable LESS
+    fi
 
     # Build busybox
     make busybox -j$(nproc)
@@ -81,8 +85,10 @@ build_busybox() {
 build_dash() {
     cd $DASH_SOURCES
 
-    autoreconf -fiv
-    ./configure --enable-static CFLAGS="-O2"
+    if [ ! -f "$DASH_SOURCES"/config.status ]; then
+        autoreconf -fiv
+        ./configure --enable-static CFLAGS="-O2"
+    fi
 
     make
 
@@ -100,7 +106,9 @@ build_system() {
 build_limine() {
     cd $LIMINE_SOURCES
 
-    ./configure --enable-all
+    if [ ! -f "$LIMINE_SOURCES"/config.status ]; then
+        ./configure --enable-all
+    fi
 
     make
 
