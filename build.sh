@@ -25,9 +25,6 @@ build_kernel() {
     # Go into the linux directory
     cd $KERNEL_SOURCES
 
-    # Make sure everything is squeaky clean
-    make mrproper
-
     # Create a default config for amd64 that uses clang to build
     make ARCH=x86_64 LLVM=$LLVM_BIN defconfig
 
@@ -42,8 +39,6 @@ build_kernel() {
 
     make olddefconfig
 
-    # exit
-
     # Build the kernel
     make bzImage -j$(nproc)
 
@@ -54,9 +49,6 @@ build_kernel() {
 build_busybox() {
     # Go into busybox directory
     cd $BUSYBOX_SOURCES
-
-    # Make sure everything is clean
-    make distclean
 
     # Create a default config
     make allnoconfig
@@ -203,50 +195,13 @@ create_iso() {
 
 }
 
-DOWNLOAD_SOURCES=true
-BUILD_KERNEL=true
-BUILD_BUSYBOX=true
-BUILD_DASH=true
-
-while getopts "skbd" arg; do
-    case ${arg} in
-    s)
-        DOWNLOAD_SOURCES=false
-        ;;
-    k)
-        BUILD_KERNEL=false
-        ;;
-    b)
-        BUILD_BUSYBOX=false
-        ;;
-    d)
-        BUILD_DASH=false
-        ;;
-    esac
-done
-
-pipenv run python download_and_extract.py
+pipenv run python sources.py
 
 BUILD_START=$(date +%s)
 
-if $BUILD_KERNEL; then
-    build_kernel
-else
-    echo "Skipping kernel build"
-fi
-
-if $BUILD_BUSYBOX; then
-    build_busybox
-else
-    echo "Skipping busybox build"
-fi
-
-if $BUILD_DASH; then
-    build_dash
-else
-    echo "Skipping dash build"
-fi
-
+build_kernel
+build_busybox
+build_dash
 build_system
 build_limine
 create_rootfs
