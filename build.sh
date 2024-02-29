@@ -200,7 +200,7 @@ create_iso() {
 
 }
 
-pipenv run python sources.py
+rye run sources
 
 BUILD_START=$(date +%s)
 
