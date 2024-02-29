@@ -17,7 +17,7 @@ KERNEL_SOURCES=$SRC_DIR/sources/linux/linux-${KERNEL_VERSION}
 BUSYBOX_SOURCES=$SRC_DIR/sources/busybox/busybox-${BUSYBOX_VERSION}
 DASH_SOURCES=$SRC_DIR/sources/dash/dash-${DASH_VERSION}
 LIMINE_SOURCES=$SRC_DIR/sources/limine/limine-${LIMINE_VERSION}
-LLVM_BIN=$SRC_DIR/tools/llvm/llvm-${LLVM_VERSION}-x86_64/bin/
+LLVM_BIN=$SRC_DIR/sources/llvm/llvm-${LLVM_VERSION}-x86_64/bin/
 SYSTEM_TARGET=$SRC_DIR/target/x86_64-unknown-linux-gnu/release
 
 build_kernel() {
