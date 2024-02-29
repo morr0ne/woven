@@ -115,12 +115,12 @@ sources = [
 ]
 
 
-for url, file_name, path, pretty_name, hash in sources:
-    if not check_hash(f"sources/tar/{file_name}", hash):
-        download_file(url, file_name, pretty_name)
+def main():
+    for url, file_name, path, pretty_name, hash in sources:
+        if not check_hash(f"sources/tar/{file_name}", hash):
+            download_file(url, file_name, pretty_name)
 
-    if not os.path.isfile(f"{path}/.ok"):
-        extract_file(file_name, path, pretty_name)
+        if not os.path.isfile(f"{path}/.ok"):
+            extract_file(file_name, path, pretty_name)
 
-
-print("Sources OK")
+    print("Sources OK")
