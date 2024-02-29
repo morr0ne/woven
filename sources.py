@@ -101,7 +101,7 @@ sources = [
     (
         "https://cdn.kernel.org/pub/tools/llvm/files/llvm-17.0.6-x86_64.tar.xz",
         "llvm.tar.xz",
-        "tools/llvm",
+        "sources/llvm",
         "llvm sources",
         "3b31eb5e6fe253e336608a1db2a0f6811494afae89e7409c331c5230a699f00e",
     ),
