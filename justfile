@@ -170,7 +170,7 @@ create-new-rootfs:
 create-iso:
     # Remove old isoimage if it exists
     rm -rf "{{ isoimage }}"
-    rm -rf cutiepie.iso
+    rm -rf woven.iso
 
     # Create directory for boot files
     mkdir -p "{{ isoimage }}"/boot
@@ -196,10 +196,10 @@ create-iso:
         -no-emul-boot -boot-load-size 4 -boot-info-table \
         --efi-boot boot/limine-uefi-cd.bin \
         -efi-boot-part --efi-boot-image --protective-msdos-label \
-        "{{ isoimage }}" -o "{{ src }}"/cutiepie.iso
+        "{{ isoimage }}" -o "{{ src }}"/woven.iso
 
     # Ensure the iso is bootable
-    "{{ limine_sources }}"/bin/limine bios-install cutiepie.iso
+    "{{ limine_sources }}"/bin/limine bios-install woven.iso
 
 qemu:
     scripts/qemu.sh
