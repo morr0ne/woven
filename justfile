@@ -82,9 +82,9 @@ _configure-dash:
 _configure-limine:
     cd "{{ limine_sources }}" && ./configure --enable-uefi-x86-64 --enable-bios-cd --enable-uefi-cd --enable-bios
 
-build-all: _build-linux _build-busybox _build-dash _build-limine build-system
+build-all: _build-kernel _build-busybox _build-dash _build-limine build-system
 
-_build-linux:
+_build-kernel:
     cd "{{ kernel_sources }}" && make bzImage -j$(nproc)
 
 _build-busybox:
