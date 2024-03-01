@@ -1,6 +1,6 @@
 #!/bin/sh
 
-qemu-system-x86_64 -m 256M -cdrom cutiepie.iso -boot d \
+qemu-system-x86_64 -m 256M -cdrom woven.iso -boot d \
   -enable-kvm -machine q35 -device intel-iommu -cpu host \
   -nic user,model=virtio-net-pci -vga std -smp 6 \
   -device virtio-serial-pci -spice port=5930,disable-ticketing=on \
