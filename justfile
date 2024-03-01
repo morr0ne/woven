@@ -35,7 +35,7 @@ _configure-kernel:
 
     make ARCH=x86_64 LLVM="{{ llvm_bin }}" defconfig
 
-    {{ config_script }} --enable LTO_CLANG_FULL                 # Enables full lto with clang
+    {{ config_script }} --enable LTO_CLANG_THIN                 # Enables thin lto with clang
     {{ config_script }} --enable CONFIG_KERNEL_ZSTD             # Enable zstd compression
     {{ config_script }} --enable CONFIG_FB                      # Enable zstd compression
     {{ config_script }} --enable CONFIG_FB_VESA                 # Enable zstd compression
