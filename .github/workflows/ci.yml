@@ -1,0 +1,13 @@
+name: ci
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install just
+        uses: taiki-e/install-action@just
+      - name: Build image
+        run: just
