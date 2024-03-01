@@ -80,7 +80,7 @@ _configure-dash:
     ./configure --enable-static CFLAGS="-O2"
 
 _configure-limine:
-    cd "{{ limine_sources }}" && ./configure --enable-all
+    cd "{{ limine_sources }}" && ./configure --enable-uefi-x86-64 --enable-bios-cd --enable-uefi-cd --enable-bios
 
 build-all: _build-linux _build-busybox _build-dash _build-limine build-system
 
