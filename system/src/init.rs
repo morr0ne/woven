@@ -9,8 +9,8 @@ use core::ffi::CStr;
 
 use rustix::{
     io,
-    process::{getpid, waitpid, WaitOptions},
-    runtime::{execve, fork},
+    process::getpid,
+    runtime::execve,
     stdio::stdout,
     thread::{nanosleep, Timespec},
 };
@@ -56,6 +56,7 @@ fn main() -> i32 {
     // }
 }
 
+#[allow(unused)]
 fn sleep() {
     let timespec = Timespec {
         tv_sec: 1,
