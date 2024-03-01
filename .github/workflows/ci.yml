@@ -7,6 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install rye
+        uses: eifinger/setup-rye@v1
+        with:
+          version: 0.27.0
       - name: Install just
         uses: taiki-e/install-action@just
       - name: Build image
