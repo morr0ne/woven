@@ -19,7 +19,7 @@ all: prepare configure build
 
 build: build-all pack
 
-pack: create-rootfs create-iso
+pack: create-rootfs create-new-rootfs create-iso
 
 prepare:
     rye sync
@@ -147,6 +147,26 @@ create-rootfs:
     # Pack initramfs
     find . | bsdcpio -R root:root -H newc -o | zstd -22 --ultra --long --quiet --stdout >"{{ work_dir }}"/rootfs.cpio.zst
 
+create-new-rootfs:
+    #!/usr/bin/env bash
+    set -euxo pipefail
+
+    rm -rf work/newrootfs
+
+    mkdir -p work/newrootfs
+    cd work/newrootfs
+    
+    mkdir dev
+    mkdir proc
+    mkdir sys
+    mkdir tmp
+
+    mkdir system
+    cp "{{ system_target }}"/raminit system/raminit
+    cp "{{ dash_sources }}"/src/dash system/sh
+
+    find . | bsdcpio -R root:root -H newc -o | zstd -22 --ultra --long --quiet --stdout >"{{ work_dir }}"/newrootfs.cpio.zst
+
 create-iso:
     # Remove old isoimage if it exists
     rm -rf "{{ isoimage }}"
@@ -160,6 +180,7 @@ create-iso:
 
     # Copy the initramfs image
     cp "{{ work_dir }}"/rootfs.cpio.zst "{{ isoimage }}"/boot/rootfs.zst
+    cp "{{ work_dir }}"/newrootfs.cpio.zst "{{ isoimage }}"/boot/newrootfs.zst
 
     # Copy all limine stuff
     cp "{{ limine_sources }}"/bin/limine-uefi-cd.bin "{{ isoimage }}"/boot
