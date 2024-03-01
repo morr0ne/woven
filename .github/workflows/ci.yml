@@ -18,7 +18,9 @@ jobs:
           rustup target add x86_64-unknown-linux-gnu
 
       - name: Install rye
-        run: curl -sSf https://rye-up.com/get | bash
+        run: |
+          curl -sSf https://rye-up.com/get > rye-init.sh
+          RYE_INSTALL_OPTION=-y bash rye-init.sh 
 
       - name: Checkout code
         uses: actions/checkout@v4
