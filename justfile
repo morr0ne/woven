@@ -12,6 +12,7 @@ llvm_bin := src / "sources/llvm/llvm-" + llvm_version + "-x86_64/bin/"
 config_script := src / "scripts/config"
 work_dir := src / "work"
 rootfs := work_dir / "rootfs"
+stemfs := work_dir / "stemfs"
 isoimage := work_dir / "isoimage"
 system_target := src / "target/x86_64-unknown-linux-gnu/release"
 
@@ -19,7 +20,7 @@ all: prepare configure build
 
 build: build-all pack
 
-pack: create-rootfs create-new-rootfs create-iso
+pack: create-rootfs create-new-rootfs create-stemfs create-iso
 
 prepare:
     rye sync
@@ -167,6 +168,53 @@ create-new-rootfs:
 
     find . | bsdcpio -R root:root -H newc -o | zstd -22 --ultra --long --quiet --stdout >"{{ work_dir }}"/newrootfs.cpio.zst
 
+create-stemfs:
+    #!/usr/bin/env bash
+    set -euxo pipefail
+
+    # Remove old stemfs if it exists
+    rm -rf "{{ stemfs }}"
+    rm -rf "{{ work_dir }}"/stemfs.erofs
+    # Go into busybox directory
+    cd "{{ busybox_sources }}"
+
+    # Create all the symlinks
+    make CONFIG_PREFIX="{{ stemfs }}" install
+
+    # Enter rootfs
+    cd "{{ stemfs }}"
+
+    # Create basic filesystem
+    mkdir dev
+    mkdir etc
+    mkdir lib
+    mkdir proc
+    mkdir root
+    mkdir sys
+    mkdir tmp
+    mkdir var
+    mkdir mnt
+
+    # Copy init files
+    cp "{{ src }}"/init .
+    cp "{{ src }}"/inittab etc/inittab
+
+    # Copy shell
+    cp "{{ dash_sources }}"/src/dash bin/sh
+
+    # Copy system manager files
+    mkdir system
+    cp "{{ system_target }}"/init system/init
+    cp "{{ system_target }}"/uname system/uname
+    cp "{{ system_target }}"/clear system/clear
+
+    # Strip everything
+    # strip --strip-all $ROOTFS/bin/* $ROOTFS/sbin/*
+
+    # Pack stemfs
+    mkfs.erofs {{ work_dir }}/stemfs.erofs .
+
+
 create-iso:
     # Remove old isoimage if it exists
     rm -rf "{{ isoimage }}"
@@ -181,6 +229,7 @@ create-iso:
     # Copy the initramfs image
     cp "{{ work_dir }}"/rootfs.cpio.zst "{{ isoimage }}"/boot/rootfs.zst
     cp "{{ work_dir }}"/newrootfs.cpio.zst "{{ isoimage }}"/boot/newrootfs.zst
+    cp "{{ work_dir }}"/stemfs.erofs "{{ isoimage }}"/stemfs.erofs
 
     # Copy all limine stuff
     cp "{{ limine_sources }}"/bin/limine-uefi-cd.bin "{{ isoimage }}"/boot
