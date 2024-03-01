@@ -3,10 +3,8 @@ name = "system"
 version = "0.1.0"
 edition = "2021"
 
-
-
 [dependencies]
-rustix = { version = "0.38.31", git = "https://github.com/morr0ne/rustix.git", branch = "mount2", default-features = false, features = [
+rustix = { version = "0.38.31", git = "https://github.com/morr0ne/rustix.git", branch = "mount_none", default-features = false, features = [
     "mount",
     "process",
     "stdio",
@@ -23,7 +21,6 @@ path = "src/init.rs"
 [[bin]]
 name = "raminit"
 path = "src/raminit.rs"
-
 
 [[bin]]
 name = "uname"
