@@ -12,13 +12,16 @@ jobs:
         run: pacman --noconfirm -Syu && pacman --needed --noconfirm -S base-devel git autoconf automake nasm curl mtools llvm clang lld just
 
       - name: Install rust
-        run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > rustup-init.sh
+          sh rustup-init.sh -y --default-toolchain none
+          rustup target add x86_64-unknown-linux-gnu
 
       - name: Install rye
         run: curl -sSf https://rye-up.com/get | bash
 
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Build image
         run: just
