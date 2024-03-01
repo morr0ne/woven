@@ -5,13 +5,20 @@ jobs:
   test:
     name: Build
     runs-on: ubuntu-latest
+    container: archlinux:latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: pacman --noconfirm -Syu && pacman --needed --noconfirm -S base-devel git autoconf automake nasm curl mtools llvm clang lld just
+
+      - name: Install rust
+        run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
       - name: Install rye
-        uses: eifinger/setup-rye@v1
-        with:
-          version: 0.27.0
-      - name: Install just
-        uses: taiki-e/install-action@just
+        run: curl -sSf https://rye-up.com/get | bash
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
       - name: Build image
         run: just
