@@ -9,7 +9,6 @@ use rustix::{
     fd::AsFd,
     io::{self, Errno},
     stdio::stdout,
-    system::{uname, Uname},
 };
 
 #[panic_handler]
