@@ -11,7 +11,7 @@ jobs:
       - name: Install dependencies
         run: |
           pacman --noconfirm -Syu && pacman --needed --noconfirm -S \
-          base-devel git autoconf automake nasm curl mtools llvm clang lld just rye rustup
+          base-devel git autoconf automake nasm curl mtools llvm clang lld just rye rustup bc
 
       - name: Checkout code
         uses: actions/checkout@v4
