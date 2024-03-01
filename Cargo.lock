@@ -33,7 +33,7 @@ checksum = "01cda141df6706de531b6c46c3a33ecca755538219bd484262fa09410c13539c"
 [[package]]
 name = "rustix"
 version = "0.38.31"
-source = "git+https://github.com/morr0ne/rustix.git?branch=mount2#93539d2c525fbfee570dd1eb9632bbb501674afd"
+source = "git+https://github.com/morr0ne/rustix.git?branch=mount2#5ba40e3f418b6aefa59804cfefd4d9b0d859a432"
 dependencies = [
  "bitflags",
  "errno",
