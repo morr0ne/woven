@@ -31,14 +31,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "01cda141df6706de531b6c46c3a33ecca755538219bd484262fa09410c13539c"
 
 [[package]]
+name = "linux-raw-sys"
+version = "0.6.4"
+source = "git+https://github.com/morr0ne/linux-raw-sys.git?branch=loop#fc318fee7726a49283b49cb140a8b83902208b61"
+
+[[package]]
 name = "rustix"
 version = "0.38.31"
-source = "git+https://github.com/morr0ne/rustix.git?branch=mount_none#8176ad1df71065e42b514932cc2b5e33b16d5031"
+source = "git+https://github.com/morr0ne/rustix.git?branch=execve#49e1b377054b960958783d99c8c69d1958f6a178"
 dependencies = [
  "bitflags",
  "errno",
  "libc",
- "linux-raw-sys",
+ "linux-raw-sys 0.4.13",
  "windows-sys",
 ]
 
@@ -46,6 +51,7 @@ dependencies = [
 name = "system"
 version = "0.1.0"
 dependencies = [
+ "linux-raw-sys 0.6.4",
  "rustix",
 ]
 
