@@ -4,7 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-rustix = { version = "0.38.31", git = "https://github.com/morr0ne/rustix.git", branch = "mount_none", default-features = false, features = [
+linux-raw-sys = { git = "https://github.com/morr0ne/linux-raw-sys.git", branch = "loop", version = "0.6.4", features = [
+    "loop_device",
+    "no_std",
+], default-features = false }
+rustix = { version = "0.38.31", git = "https://github.com/morr0ne/rustix.git", branch = "execve", default-features = false, features = [
     "mount",
     "process",
     "stdio",
