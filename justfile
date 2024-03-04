@@ -20,7 +20,7 @@ all: prepare configure build
 
 build: build-all pack
 
-pack: create-rootfs create-new-rootfs create-stemfs create-iso
+pack: create-rootfs create-stemfs create-iso
 
 prepare:
     rye sync
@@ -43,6 +43,16 @@ _configure-kernel:
     {{ config_script }} --enable CONFIG_FB_EFI                  # Enable zstd compression
     {{ config_script }} --enable CONFIG_FB_CORE                 # Enable zstd compression
     {{ config_script }} --enable CONFIG_FRAMEBUFFER_CONSOLE     # Enable zstd compression
+    {{ config_script }} --enable CONFIG_EROFS_FS                # Enable zstd compression
+    {{ config_script }} --enable CONFIG_EROFS_FS_XATTR
+    {{ config_script }} --enable CONFIG_EROFS_FS_POSIX_ACL
+    {{ config_script }} --enable CONFIG_EROFS_FS_SECURITY
+    {{ config_script }} --enable CONFIG_EROFS_FS_ZIP
+    {{ config_script }} --enable CONFIG_EROFS_FS_ZIP_LZMA
+    {{ config_script }} --enable CONFIG_EROFS_FS_ZIP_DEFLATE
+    {{ config_script }} --enable CONFIG_EROFS_FS_ONDEMAND
+    {{ config_script }} --enable CONFIG_EROFS_FS_PCPU_KTHREAD
+    {{ config_script }} --enable CONFIG_EROFS_FS_PCPU_KTHREAD_HIPRI
 
     make olddefconfig
 
@@ -70,6 +80,8 @@ _configure-busybox:
     {{ config_script }} --enable WHICH
     {{ config_script }} --enable DMESG
     {{ config_script }} --enable LESS
+    {{ config_script }} --enable BLKID
+    {{ config_script }} --enable FEATURE_BLKID_TYPE
 
 _configure-dash:
     #!/usr/bin/env bash
@@ -108,65 +120,20 @@ create-rootfs:
     rm -rf "{{ rootfs }}"
     rm -rf "{{ work_dir }}"/rootfs.cpio.zst
 
-    # Go into busybox directory
-    cd "{{ busybox_sources }}"
-
-    # Create all the symlinks
-    make CONFIG_PREFIX="{{ rootfs }}" install
+    mkdir -p "{{ rootfs }}"
 
     # Enter rootfs
     cd "{{ rootfs }}"
-
-    # Create basic filesystem
-    mkdir dev
-    mkdir etc
-    mkdir lib
-    mkdir proc
-    mkdir root
-    mkdir sys
-    mkdir tmp
-    mkdir var
-    mkdir mnt
-
-    # Copy init files
-    cp "{{ src }}"/init .
-    cp "{{ src }}"/inittab etc/inittab
-
-    # Copy shell
-    cp "{{ dash_sources }}"/src/dash bin/sh
-
-    # Copy system manager files
-    mkdir system
-    cp "{{ system_target }}"/init system/init
-    cp "{{ system_target }}"/raminit system/raminit
-    cp "{{ system_target }}"/uname system/uname
-    cp "{{ system_target }}"/clear system/clear
-
-    # Strip everything
-    # strip --strip-all $ROOTFS/bin/* $ROOTFS/sbin/*
-
-    # Pack initramfs
-    find . | bsdcpio -R root:root -H newc -o | zstd -22 --ultra --long --quiet --stdout >"{{ work_dir }}"/rootfs.cpio.zst
-
-create-new-rootfs:
-    #!/usr/bin/env bash
-    set -euxo pipefail
-
-    rm -rf work/newrootfs
-
-    mkdir -p work/newrootfs
-    cd work/newrootfs
     
     mkdir dev
     mkdir proc
     mkdir sys
     mkdir tmp
+    mkdir stem
 
-    mkdir system
-    cp "{{ system_target }}"/raminit system/raminit
-    cp "{{ dash_sources }}"/src/dash system/sh
+    cp "{{ system_target }}"/raminit raminit
 
-    find . | bsdcpio -R root:root -H newc -o | zstd -22 --ultra --long --quiet --stdout >"{{ work_dir }}"/newrootfs.cpio.zst
+    find . | bsdcpio -R root:root -H newc -o | zstd -22 --ultra --long --quiet --stdout >"{{ work_dir }}"/rootfs.cpio.zst
 
 create-stemfs:
     #!/usr/bin/env bash
@@ -193,10 +160,7 @@ create-stemfs:
     mkdir sys
     mkdir tmp
     mkdir var
-    mkdir mnt
-
-    # Copy init files
-    cp "{{ src }}"/init .
+    
     cp "{{ src }}"/inittab etc/inittab
 
     # Copy shell
@@ -228,7 +192,6 @@ create-iso:
 
     # Copy the initramfs image
     cp "{{ work_dir }}"/rootfs.cpio.zst "{{ isoimage }}"/boot/rootfs.zst
-    cp "{{ work_dir }}"/newrootfs.cpio.zst "{{ isoimage }}"/boot/newrootfs.zst
     cp "{{ work_dir }}"/stemfs.erofs "{{ isoimage }}"/stemfs.erofs
 
     # Copy all limine stuff
