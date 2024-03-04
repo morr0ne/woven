@@ -22,7 +22,7 @@ jobs:
       - name: Upload image
         uses: actions/upload-artifact@v4
         with:
-          name: woven.iso
-          path: woven-${{ github.sha }}.iso
+          name: woven-${{ github.sha }}.iso
+          path: woven.iso
           if-no-files-found: error
           retention-days: 1
