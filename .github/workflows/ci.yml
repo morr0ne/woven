@@ -18,3 +18,11 @@ jobs:
 
       - name: Build image
         run: just
+
+      - name: Upload image
+        uses: actions/upload-artifact@v4
+        with:
+          name: woven.iso
+          path: woven-${{ github.sha }}.iso
+          if-no-files-found: error
+          retention-days: 1
