@@ -30,6 +30,7 @@ unsafe impl Ioctl for FreeLoop {
     }
 }
 
+#[repr(transparent)]
 pub struct ConfigureLoop {
     config: loop_config,
 }
