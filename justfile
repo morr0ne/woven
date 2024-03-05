@@ -38,12 +38,12 @@ _configure-kernel:
 
     {{ config_script }} --enable LTO_CLANG_THIN                 # Enables thin lto with clang
     {{ config_script }} --enable CONFIG_KERNEL_ZSTD             # Enable zstd compression
-    {{ config_script }} --enable CONFIG_FB                      # Enable zstd compression
-    {{ config_script }} --enable CONFIG_FB_VESA                 # Enable zstd compression
-    {{ config_script }} --enable CONFIG_FB_EFI                  # Enable zstd compression
-    {{ config_script }} --enable CONFIG_FB_CORE                 # Enable zstd compression
-    {{ config_script }} --enable CONFIG_FRAMEBUFFER_CONSOLE     # Enable zstd compression
-    {{ config_script }} --enable CONFIG_EROFS_FS                # Enable zstd compression
+    {{ config_script }} --enable CONFIG_FB
+    {{ config_script }} --enable CONFIG_FB_VESA
+    {{ config_script }} --enable CONFIG_FB_EFI
+    {{ config_script }} --enable CONFIG_FB_CORE
+    {{ config_script }} --enable CONFIG_FRAMEBUFFER_CONSOLE
+    {{ config_script }} --enable CONFIG_EROFS_FS
     {{ config_script }} --enable CONFIG_EROFS_FS_XATTR
     {{ config_script }} --enable CONFIG_EROFS_FS_POSIX_ACL
     {{ config_script }} --enable CONFIG_EROFS_FS_SECURITY
