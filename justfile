@@ -245,5 +245,16 @@ create-iso:
     # Ensure the iso is bootable
     "{{ limine_sources }}"/bin/limine bios-install woven.iso
 
+clean:
+    rm -rf work
+    rm -rf woven.iso
+
+    cd "{{ kernel_sources }}" &&  make mrproper
+    cd "{{ busybox_sources }}" && make mrproper
+    cd "{{ dash_sources }}" && make clean
+    cd "{{ limine_sources}}" && make clean
+
+    cargo clean
+
 qemu:
     scripts/qemu.sh
