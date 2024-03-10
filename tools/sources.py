@@ -71,11 +71,11 @@ def check_hash(path: str, hash: str) -> bool:
 
 sources = [
     (
-        "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.7.6.tar.xz",
+        "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.7.9.tar.xz",
         "linux.tar.xz",
         "sources/linux",
         "linux kernel sources",
-        "562759202d647179d453bdfa7738a1ac7a699a26e876275fff656532219d17f3",
+        "7adb5bce76f70bda75a8e2ce068e4830d9b6427d8ff81cd61c67fec71844125a",
     ),
     (
         "http://sources.buildroot.net/busybox/busybox-1.36.1.tar.bz2",
@@ -99,11 +99,11 @@ sources = [
         "1c2fa29c9ddfa510a338ccb6b8764b9acdf948405f231e2ef316a03a1f04a7e0",
     ),
     (
-        "https://cdn.kernel.org/pub/tools/llvm/files/llvm-17.0.6-x86_64.tar.xz",
+        "https://cdn.kernel.org/pub/tools/llvm/files/llvm-18.1.0-x86_64.tar.xz",
         "llvm.tar.xz",
         "sources/llvm",
         "llvm sources",
-        "3b31eb5e6fe253e336608a1db2a0f6811494afae89e7409c331c5230a699f00e",
+        "47621ffec1535e6ecbf50c27daec8d77d95d34622e633932ec00e1298c9734ad",
     ),
     # (
     #     "https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/snapshot/linux-firmware-20240115.tar.gz",

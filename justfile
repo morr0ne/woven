@@ -1,9 +1,9 @@
 src := `pwd`
-kernel_version := "6.7.6"
+kernel_version := "6.7.9"
 busybox_version := "1.36.1"
 dash_version := "0.5.12"
 limine_version := "7.0.5"
-llvm_version := "17.0.6"
+llvm_version := "18.1.0"
 kernel_sources := src / "sources/linux/linux-" + kernel_version
 busybox_sources := src / "sources/busybox/busybox-" + busybox_version
 dash_sources := src / "sources/dash/dash-" + dash_version
@@ -53,6 +53,8 @@ _configure-kernel:
     {{ config_script }} --enable CONFIG_EROFS_FS_ONDEMAND
     {{ config_script }} --enable CONFIG_EROFS_FS_PCPU_KTHREAD
     {{ config_script }} --enable CONFIG_EROFS_FS_PCPU_KTHREAD_HIPRI
+    {{ config_script }} --enable CONFIG_DRM_VIRTIO_GPU
+    {{ config_script }} --enable CONFIG_DRM_VIRTIO_GPU_KMS
 
     make olddefconfig
 
