@@ -105,6 +105,14 @@ sources = [
         "llvm sources",
         "47621ffec1535e6ecbf50c27daec8d77d95d34622e633932ec00e1298c9734ad",
     ),
+    (
+        "https://archive.mesa3d.org/mesa-24.0.2.tar.xz",
+        "mesa.tar.xz",
+        "sources/mesa",
+        "mesa sources",
+        "dc461fa04c83b35eec845f3f1e9837acb904a56f55bb77e8d1dbff97a87f4dda",
+    ),
+    #
     # (
     #     "https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/snapshot/linux-firmware-20240115.tar.gz",
     #     "linux-firmware.tar.xz",

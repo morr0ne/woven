@@ -3,11 +3,13 @@ kernel_version := "6.7.9"
 busybox_version := "1.36.1"
 dash_version := "0.5.12"
 limine_version := "7.0.5"
+mesa_version := "24.0.2"
 llvm_version := "18.1.0"
 kernel_sources := src / "sources/linux/linux-" + kernel_version
 busybox_sources := src / "sources/busybox/busybox-" + busybox_version
 dash_sources := src / "sources/dash/dash-" + dash_version
 limine_sources := src / "sources/limine/limine-" + limine_version
+mesa_sources := src / "sources/mesa/mesa-" + mesa_version
 llvm_bin := src / "sources/llvm/llvm-" + llvm_version + "-x86_64/bin/"
 config_script := src / "scripts/config"
 work_dir := src / "work"
@@ -102,6 +104,24 @@ _configure-dash:
 
 _configure-limine:
     cd "{{ limine_sources }}" && ./configure --enable-uefi-x86-64 --enable-bios-cd --enable-uefi-cd --enable-bios
+_configure-mesa:
+    #!/usr/bin/env bash
+    set -euxo pipefail
+
+    cd "{{ mesa_sources }}"
+
+    meson setup build \
+        -D platforms=wayland \
+        -D glx=disabled \
+        -D egl=enabled \
+        -D gallium-drivers=virgl \
+        -D vulkan-drivers=virtio \
+        -D gles1=disabled \
+        -D gles2=enabled \
+        -D llvm=enabled \
+        -D shared-llvm=enabled \
+        -D zstd=enabled \
+        -D dri3=enabled
 
 build-all: _build-kernel _build-busybox _build-dash _build-limine build-system
 
@@ -116,6 +136,9 @@ _build-dash:
 
 _build-limine:
     cd "{{ limine_sources }}" && make
+
+_build-mesa:
+    cd "{{ mesa_sources }}" && meson compile -C build
 
 build-system:
     cargo build --release --target x86_64-unknown-linux-gnu
