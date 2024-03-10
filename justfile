@@ -33,30 +33,37 @@ _configure-kernel:
     set -euxo pipefail
 
     cd "{{ kernel_sources }}"
-
+    
     make ARCH=x86_64 LLVM="{{ llvm_bin }}" defconfig
 
-    {{ config_script }} --enable LTO_CLANG_THIN                 # Enables thin lto with clang
-    {{ config_script }} --enable CONFIG_KERNEL_ZSTD             # Enable zstd compression
-    {{ config_script }} --enable CONFIG_FB
-    {{ config_script }} --enable CONFIG_FB_VESA
-    {{ config_script }} --enable CONFIG_FB_EFI
-    {{ config_script }} --enable CONFIG_FB_CORE
-    {{ config_script }} --enable CONFIG_FRAMEBUFFER_CONSOLE
-    {{ config_script }} --enable CONFIG_EROFS_FS
-    {{ config_script }} --enable CONFIG_EROFS_FS_XATTR
-    {{ config_script }} --enable CONFIG_EROFS_FS_POSIX_ACL
-    {{ config_script }} --enable CONFIG_EROFS_FS_SECURITY
-    {{ config_script }} --enable CONFIG_EROFS_FS_ZIP
-    {{ config_script }} --enable CONFIG_EROFS_FS_ZIP_LZMA
-    {{ config_script }} --enable CONFIG_EROFS_FS_ZIP_DEFLATE
-    {{ config_script }} --enable CONFIG_EROFS_FS_ONDEMAND
-    {{ config_script }} --enable CONFIG_EROFS_FS_PCPU_KTHREAD
-    {{ config_script }} --enable CONFIG_EROFS_FS_PCPU_KTHREAD_HIPRI
-    {{ config_script }} --enable CONFIG_DRM_VIRTIO_GPU
-    {{ config_script }} --enable CONFIG_DRM_VIRTIO_GPU_KMS
-
-    make olddefconfig
+    {{ config_script }} --disable LTO_CLANG_FULL
+    {{ config_script }} --disable LTO_NONE
+    {{ config_script }} --enable LTO_CLANG_THIN
+    # {{ config_script }} --enable KERNEL_ZSTD
+    {{ config_script }} --enable EROFS_FS
+    {{ config_script }} --enable EROFS_FS_XATTR
+    {{ config_script }} --enable EROFS_FS_POSIX_ACL
+    {{ config_script }} --enable EROFS_FS_SECURITY
+    {{ config_script }} --enable EROFS_FS_ZIP
+    {{ config_script }} --enable EROFS_FS_ZIP_LZMA
+    {{ config_script }} --enable EROFS_FS_ZIP_DEFLATE
+    {{ config_script }} --enable EROFS_FS_ONDEMAND
+    {{ config_script }} --enable EROFS_FS_PCPU_KTHREAD
+    {{ config_script }} --enable EROFS_FS_PCPU_KTHREAD_HIPRI
+    {{ config_script }} --disable EROFS_FS_DEBUG
+    {{ config_script }} --enable DRM
+    {{ config_script }} --enable DRM_VIRTIO_GPU
+    {{ config_script }} --enable DRM_VIRTIO_GPU_KMS
+    {{ config_script }} --enable DRM_FBDEV_EMULATION
+    {{ config_script }} --enable DRM_KMS_HELPER
+    {{ config_script }} --enable FB_CORE
+    {{ config_script }} --enable FB_DEVICE
+    {{ config_script }} --enable FRAMEBUFFER_CONSOLE
+    {{ config_script }} --disable FRAMEBUFFER_CONSOLE_LEGACY_ACCELERATION
+    {{ config_script }} --disable FRAMEBUFFER_CONSOLE_ROTATION
+    {{ config_script }} --set-val DRM_FBDEV_OVERALLOC 100
+    {{ config_script }} --disable LOGO
+    {{ config_script }} --disable FONTS
 
 _configure-busybox:
     #!/usr/bin/env bash
@@ -100,7 +107,7 @@ _configure-limine:
 build-all: _build-kernel _build-busybox _build-dash _build-limine build-system
 
 _build-kernel:
-    cd "{{ kernel_sources }}" && make bzImage -j$(nproc)
+    cd "{{ kernel_sources }}" && make ARCH=x86_64 LLVM="{{ llvm_bin }}" bzImage -j$(nproc)
 
 _build-busybox:
     cd "{{ busybox_sources }}" && make busybox -j$(nproc)
@@ -144,6 +151,7 @@ create-stemfs:
     # Remove old stemfs if it exists
     rm -rf "{{ stemfs }}"
     rm -rf "{{ work_dir }}"/stemfs.erofs
+
     # Go into busybox directory
     cd "{{ busybox_sources }}"
 
