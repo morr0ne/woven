@@ -16,13 +16,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Load enviroment
-        run: |
-          rye sync \
-          . .venv/bin/activate
+      - name: Sync enviroment
+        run: rye sync
 
       - name: Build image
-        run: just
+        run: |
+          . .venv/bin/activate
+          just
 
       - name: Upload image
         uses: actions/upload-artifact@v4
