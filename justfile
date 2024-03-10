@@ -127,7 +127,7 @@ create-rootfs:
 
     # Remove old rootfs if it exists
     rm -rf "{{ rootfs }}"
-    rm -rf "{{ work_dir }}"/rootfs.cpio.zst
+    rm -rf "{{ work_dir }}"/rootfs.img
 
     mkdir -p "{{ rootfs }}"
 
@@ -142,7 +142,7 @@ create-rootfs:
 
     cp "{{ system_target }}"/raminit raminit
 
-    find . | bsdcpio -R root:root -H newc -o | zstd -22 --ultra --long --quiet --stdout >"{{ work_dir }}"/rootfs.cpio.zst
+    find . | bsdcpio -R root:root -H newc -o | zstd -22 --ultra --long --quiet --stdout >"{{ work_dir }}"/rootfs.img
 
 create-stemfs:
     #!/usr/bin/env bash
@@ -198,10 +198,10 @@ create-iso:
     mkdir -p "{{ isoimage }}"/boot
 
     # Copy the actual kernel
-    cp "{{ kernel_sources }}"/arch/x86/boot/bzImage "{{ isoimage }}"/boot/kernel.zst
+    cp "{{ kernel_sources }}"/arch/x86/boot/bzImage "{{ isoimage }}"/boot/kernel.img
 
     # Copy the initramfs image
-    cp "{{ work_dir }}"/rootfs.cpio.zst "{{ isoimage }}"/boot/rootfs.zst
+    cp "{{ work_dir }}"/rootfs.img "{{ isoimage }}"/boot/rootfs.img
     cp "{{ work_dir }}"/stemfs.erofs "{{ isoimage }}"/stemfs.erofs
 
     # Copy all limine stuff
