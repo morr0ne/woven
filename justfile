@@ -23,8 +23,7 @@ build: build-all pack
 pack: create-rootfs create-stemfs create-iso
 
 prepare:
-    rye sync
-    rye run woven-sources
+    woven-sources
 
 configure: _configure-kernel _configure-busybox _configure-dash _configure-limine
 
