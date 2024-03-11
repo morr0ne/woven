@@ -1,0 +1,35 @@
+[linux]
+url = "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.7.9.tar.xz"
+target = "linux.tar.xz"
+version = "6.7.9"
+hash = "7adb5bce76f70bda75a8e2ce068e4830d9b6427d8ff81cd61c67fec71844125a"
+
+[busybox]
+url = "http://sources.buildroot.net/busybox/busybox-1.36.1.tar.bz2"
+target = "busybox.tar.bz2"
+version = "1.36.1"
+hash = "dfdfc1b9aa41d5134e087d904c0a5f6958825f0e94db1d2cb5ea93088247c886"
+
+[dash]
+url = "https://git.kernel.org/pub/scm/utils/dash/dash.git/snapshot/dash-0.5.12.tar.gz"
+target = "dash.tar.gz"
+version = "0.5.12"
+hash = "f38a283332d2b34058112fe4f06d2148f2318610e08ad23bd70c2e206db505eb"
+
+[limine]
+url = "https://github.com/limine-bootloader/limine/releases/download/v7.0.5/limine-7.0.5.tar.xz"
+target = "limine.tar.xz"
+version = "7.0.5"
+hash = "1c2fa29c9ddfa510a338ccb6b8764b9acdf948405f231e2ef316a03a1f04a7e0"
+
+[llvm]
+url = "https://cdn.kernel.org/pub/tools/llvm/files/llvm-18.1.0-x86_64.tar.xz"
+target = "llvm.tar.xz"
+version = "18.1.0"
+hash = "47621ffec1535e6ecbf50c27daec8d77d95d34622e633932ec00e1298c9734ad"
+
+[mesa]
+url = "https://archive.mesa3d.org/mesa-24.0.2.tar.xz"
+target = "mesa.tar.xz"
+version = "24.0.2"
+hash = "dc461fa04c83b35eec845f3f1e9837acb904a56f55bb77e8d1dbff97a87f4dda"
