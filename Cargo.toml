@@ -1,5 +1,5 @@
 [workspace]
-members = ["woven-tools"]
+members = ["tools"]
 exclude = ["system"]
 resolver = "2"
 

@@ -11,23 +11,18 @@ jobs:
       - name: Install dependencies
         run: |
           pacman --noconfirm -Syu && pacman --needed --noconfirm -S \
-          base-devel git autoconf automake nasm curl mtools llvm clang lld just rye rustup bc libisoburn libarchive erofs-utils
+          base-devel git autoconf automake nasm curl mtools llvm clang lld just rustup bc libisoburn libarchive erofs-utils python
 
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Sync enviroment
-        run: rye sync
-
       - name: Build image
-        run: |
-          . .venv/bin/activate
-          just
+        run: just
 
-      - name: Upload image
-        uses: actions/upload-artifact@v4
-        with:
-          name: woven-${{ github.sha }}.iso
-          path: woven.iso
-          if-no-files-found: error
-          retention-days: 1
+      # - name: Upload image
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: woven-${{ github.sha }}.iso
+      #     path: woven.iso
+      #     if-no-files-found: error
+      #     retention-days: 1
