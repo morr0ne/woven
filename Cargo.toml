@@ -1,9 +1,10 @@
 [workspace]
-members = ["system"]
+members = ["woven-tools"]
+exclude = ["system"]
 resolver = "2"
 
 [profile.release]
 lto = true
 codegen-units = 1
 strip = true
-panic = "abort"
+# panic = "abort"
