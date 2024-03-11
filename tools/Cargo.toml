@@ -7,6 +7,10 @@ edition = "2021"
 name = "woven-sources"
 path = "src/sources.rs"
 
+[[bin]]
+name = "woven-configs"
+path = "src/configs.rs"
+
 [dependencies]
 anyhow = "1.0.80"
 blake3 = "1.5.0"
