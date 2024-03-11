@@ -4,7 +4,7 @@ use std::{
     path::Path,
 };
 
-use anyhow::Result;
+use anyhow::{bail, Result};
 use blake3::Hasher;
 use bzip2::read::BzDecoder;
 use camino::Utf8Path;
@@ -31,36 +31,11 @@ async fn main() -> Result<()> {
 
     fs::create_dir_all("sources/tar")?;
 
-    download_sources(&sources).await?;
+    let client = Client::new();
 
     for (name, source) in &sources {
-        let target_path = format!("sources/tar/{}", source.target);
-        let target_path = Utf8Path::new(&target_path);
-
-        let archive_path = format!("sources/{name}");
-        let archive_path = Utf8Path::new(&archive_path);
-
-        if archive_path.join(".ok").exists() {
-            continue;
-        }
-
-        let target = File::open(target_path)?;
-
-        match target_path.extension().unwrap() {
-            "xz" => {
-                unpack_archive(XzDecoder::new(target), name)?;
-            }
-            "gz" => {
-                unpack_archive(GzDecoder::new(target), name)?;
-            }
-            "bz2" => {
-                unpack_archive(BzDecoder::new(target), name)?;
-            }
-            _ => {
-                println!("Something went wrong");
-                return Ok(());
-            }
-        }
+        download_source(&client, name, source).await?;
+        extract_source(name, source).await?;
     }
 
     println!("Sources OK");
@@ -68,14 +43,28 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-fn unpack_archive<R: Read>(decoder: R, name: &str) -> Result<()> {
-    println!("Unpacking {name}");
+async fn download_source(client: &Client, name: &str, source: &Source) -> Result<()> {
+    let target_path: String = format!("sources/tar/{}", source.target);
 
-    let mut archive = Archive::new(decoder);
+    if Path::new(&target_path).exists() && hash_path(&target_path)? == source.hash {
+        return Ok(());
+    }
 
-    archive.unpack(&format!("sources/{name}"))?;
+    let mut target = File::create(target_path)?;
 
-    File::create(&format!("sources/{name}/.ok"))?;
+    println!("Downloading {name}...");
+
+    let mut res = client.get(&source.url).send().await?;
+    let len = res.content_length().unwrap_or(0);
+
+    let progress_bar = ProgressBar::new(len);
+
+    while let Some(chunk) = res.chunk().await? {
+        progress_bar.inc(chunk.len() as u64);
+        target.write_all(&chunk)?;
+    }
+
+    progress_bar.finish();
 
     Ok(())
 }
@@ -88,32 +77,43 @@ fn hash_path(path: &str) -> io::Result<String> {
     Ok(hash.to_hex().to_string())
 }
 
-async fn download_sources(sources: &IndexMap<String, Source>) -> Result<()> {
-    let client = Client::new();
+async fn extract_source(name: &str, source: &Source) -> Result<()> {
+    let target_path = format!("sources/tar/{}", source.target);
+    let target_path = Utf8Path::new(&target_path);
 
-    for (name, source) in sources {
-        let target_path: String = format!("sources/tar/{}", source.target);
+    let archive_path = format!("sources/{name}");
+    let archive_path = Utf8Path::new(&archive_path);
 
-        if Path::new(&target_path).exists() && hash_path(&target_path)? == source.hash {
-            continue;
-        }
-
-        let mut target = File::create(target_path)?;
-
-        println!("Downloading {name}...");
-
-        let mut res = client.get(&source.url).send().await?;
-        let len = res.content_length().unwrap_or(0);
-
-        let progress_bar = ProgressBar::new(len);
-
-        while let Some(chunk) = res.chunk().await? {
-            progress_bar.inc(chunk.len() as u64);
-            target.write_all(&chunk)?;
-        }
-
-        progress_bar.finish();
+    if archive_path.join(".ok").exists() {
+        return Ok(());
     }
+
+    let target = File::open(target_path)?;
+
+    match target_path.extension().unwrap() {
+        "xz" => {
+            unpack_archive(XzDecoder::new(target), name)?;
+        }
+        "gz" => {
+            unpack_archive(GzDecoder::new(target), name)?;
+        }
+        "bz2" => {
+            unpack_archive(BzDecoder::new(target), name)?;
+        }
+        _ => bail!("Something went wrong extracting"),
+    }
+
+    Ok(())
+}
+
+fn unpack_archive<R: Read>(decoder: R, name: &str) -> Result<()> {
+    println!("Unpacking {name}");
+
+    let mut archive = Archive::new(decoder);
+
+    archive.unpack(&format!("sources/{name}"))?;
+
+    File::create(&format!("sources/{name}/.ok"))?;
 
     Ok(())
 }
