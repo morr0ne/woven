@@ -16,7 +16,7 @@ work_dir := src / "work"
 rootfs := work_dir / "rootfs"
 stemfs := work_dir / "stemfs"
 isoimage := work_dir / "isoimage"
-system_target := src / "target/x86_64-unknown-linux-none/release"
+system_target := src / "system/target/x86_64-unknown-linux-none/release"
 
 all: prepare configure build
 
@@ -67,6 +67,7 @@ _configure-kernel:
     {{ config_script }} --disable FRAMEBUFFER_CONSOLE_ROTATION
     {{ config_script }} --set-val DRM_FBDEV_OVERALLOC 100
     {{ config_script }} --disable LOGO
+    {{ config_script }} --disable FONTS
 
 _configure-busybox:
     #!/usr/bin/env bash
@@ -143,7 +144,7 @@ _build-mesa:
     cd "{{ mesa_sources }}" && meson compile -C build
 
 build-system:
-    cargo build --release --target x86_64-unknown-linux-none.json
+    cd system && cargo build --release --target x86_64-unknown-linux-none.json
 
 create-rootfs:
     #!/usr/bin/env bash
@@ -255,6 +256,7 @@ clean:
     cd "{{ busybox_sources }}" && make mrproper
     cd "{{ dash_sources }}" && make clean
     cd "{{ limine_sources}}" && make clean
+    cd system && cargo clean
 
     cargo clean
 
