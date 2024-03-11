@@ -16,7 +16,7 @@ work_dir := src / "work"
 rootfs := work_dir / "rootfs"
 stemfs := work_dir / "stemfs"
 isoimage := work_dir / "isoimage"
-system_target := src / "target/x86_64-unknown-linux-gnu/release"
+system_target := src / "target/x86_64-unknown-linux-none/release"
 
 all: prepare configure build
 
@@ -40,7 +40,9 @@ _configure-kernel:
     {{ config_script }} --disable LTO_CLANG_FULL
     {{ config_script }} --disable LTO_NONE
     {{ config_script }} --enable LTO_CLANG_THIN
+
     # {{ config_script }} --enable KERNEL_ZSTD
+
     {{ config_script }} --enable EROFS_FS
     {{ config_script }} --enable EROFS_FS_XATTR
     {{ config_script }} --enable EROFS_FS_POSIX_ACL
@@ -52,6 +54,7 @@ _configure-kernel:
     {{ config_script }} --enable EROFS_FS_PCPU_KTHREAD
     {{ config_script }} --enable EROFS_FS_PCPU_KTHREAD_HIPRI
     {{ config_script }} --disable EROFS_FS_DEBUG
+
     {{ config_script }} --enable DRM
     {{ config_script }} --enable DRM_VIRTIO_GPU
     {{ config_script }} --enable DRM_VIRTIO_GPU_KMS
@@ -64,7 +67,6 @@ _configure-kernel:
     {{ config_script }} --disable FRAMEBUFFER_CONSOLE_ROTATION
     {{ config_script }} --set-val DRM_FBDEV_OVERALLOC 100
     {{ config_script }} --disable LOGO
-    {{ config_script }} --disable FONTS
 
 _configure-busybox:
     #!/usr/bin/env bash
@@ -141,7 +143,7 @@ _build-mesa:
     cd "{{ mesa_sources }}" && meson compile -C build
 
 build-system:
-    cargo build --release --target x86_64-unknown-linux-gnu
+    cargo build --release --target x86_64-unknown-linux-none.json
 
 create-rootfs:
     #!/usr/bin/env bash
