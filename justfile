@@ -67,7 +67,9 @@ _configure-kernel:
     {{ config_script }} --disable FRAMEBUFFER_CONSOLE_ROTATION
     {{ config_script }} --set-val DRM_FBDEV_OVERALLOC 100
     {{ config_script }} --disable LOGO
-    {{ config_script }} --disable FONTS
+    {{ config_script }} --enable FONTS
+    
+    make ARCH=x86_64 LLVM="{{ llvm_bin }}" olddefconfig   
 
 _configure-busybox:
     #!/usr/bin/env bash
