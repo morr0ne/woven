@@ -88,6 +88,8 @@ async fn extract_source(name: &str, source: &Source) -> Result<()> {
         return Ok(());
     }
 
+    fs::remove_dir_all(archive_path)?;
+
     let target = File::open(target_path)?;
 
     match target_path.extension().unwrap() {
