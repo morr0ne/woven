@@ -252,10 +252,11 @@ clean:
     rm -rf work
     rm -rf woven.iso
 
-    cd "{{ kernel_sources }}" &&  make mrproper
-    cd "{{ busybox_sources }}" && make mrproper
-    cd "{{ dash_sources }}" && make clean
-    cd "{{ limine_sources}}" && make clean
+    -cd "{{ kernel_sources }}" &&  make mrproper
+    -cd "{{ busybox_sources }}" && make mrproper
+    -cd "{{ dash_sources }}" && make clean
+    -cd "{{ limine_sources}}" && make clean
+    
     cd system && cargo clean
 
     cargo clean
