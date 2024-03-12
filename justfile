@@ -1,5 +1,5 @@
 src := `pwd`
-kernel_version := "6.7.9"
+kernel_version := "6.8"
 busybox_version := "1.36.1"
 dash_version := "0.5.12"
 limine_version := "7.0.5"
