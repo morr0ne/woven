@@ -12,15 +12,15 @@ name = "woven-configs"
 path = "src/configs.rs"
 
 [dependencies]
-anyhow = "1.0.80"
-blake3 = "1.5.0"
+anyhow = "1.0.81"
+blake3 = "1.5.1"
 bzip2 = "0.4.4"
 camino = { version = "1.1.6", features = ["serde"] }
 flate2 = "1.0.28"
 indexmap = { version = "2.2.5", features = ["serde"] }
 indicatif = "0.17.8"
 regex = "1.10.3"
-reqwest = "0.11.25"
+reqwest = "0.11.26"
 serde = { version = "1.0.197", features = ["derive"] }
 tar = "0.4.40"
 tokio = { version = "1.36.0", features = ["macros", "rt-multi-thread"] }
