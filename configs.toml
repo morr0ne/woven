@@ -1,1 +1,29 @@
 [linux]
+# LTO_CLANG_THIN = "y"
+# KERNEL_ZSTD = "y"
+# EROFS_FS = "y"
+CRC32 = "y"
+XFS_FS = "y"
+# LIBCRC32C = "y" # needed for erofs support
+# EROFS_FS_XATTR = "y"
+# EROFS_FS_POSIX_ACL = "y"
+# EROFS_FS_SECURITY = "y"
+# EROFS_FS_ZIP = "y"
+# EROFS_FS_ZIP_LZMA = "y"
+# EROFS_FS_ZIP_DEFLATE = "y"
+# EROFS_FS_ONDEMAND = "y"
+# EROFS_FS_PCPU_KTHREAD = "y"
+# EROFS_FS_PCPU_KTHREAD_HIPRI = "y"
+# DRM = "y"
+# DRM_VIRTIO_GPU = "y"
+# DRM_VIRTIO_GPU_KMS = "y"
+# DRM_FBDEV_EMULATION = "y"
+# DRM_KMS_HELPER = "y"
+# FB_CORE = "y"
+# FB_DEVICE = "y"
+# FRAMEBUFFER_CONSOLE = "y"
+# --disable FRAMEBUFFER_CONSOLE_LEGACY_ACCELERATION
+# --disable FRAMEBUFFER_CONSOLE_ROTATION
+# --set-val DRM_FBDEV_OVERALLOC 100
+# --disable LOGO
+# FONTS = "y"
