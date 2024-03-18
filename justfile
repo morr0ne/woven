@@ -22,7 +22,7 @@ all: prepare configure build
 
 build: build-all pack
 
-pack: create-rootfs create-stemfs create-iso
+pack: create-rootfs create-stemfs create-disk
 
 prepare:
     cargo run --bin woven-sources
@@ -44,16 +44,7 @@ _configure-kernel:
     # {{ config_script }} --enable KERNEL_ZSTD
 
     {{ config_script }} --enable EROFS_FS
-    {{ config_script }} --enable EROFS_FS_XATTR
-    {{ config_script }} --enable EROFS_FS_POSIX_ACL
-    {{ config_script }} --enable EROFS_FS_SECURITY
-    {{ config_script }} --enable EROFS_FS_ZIP
-    {{ config_script }} --enable EROFS_FS_ZIP_LZMA
-    {{ config_script }} --enable EROFS_FS_ZIP_DEFLATE
-    {{ config_script }} --enable EROFS_FS_ONDEMAND
-    {{ config_script }} --enable EROFS_FS_PCPU_KTHREAD
-    {{ config_script }} --enable EROFS_FS_PCPU_KTHREAD_HIPRI
-    {{ config_script }} --disable EROFS_FS_DEBUG
+    {{ config_script }} --enable F2FS_FS
 
     {{ config_script }} --enable DRM
     {{ config_script }} --enable DRM_VIRTIO_GPU
@@ -215,44 +206,54 @@ create-stemfs:
     # Pack stemfs
     mkfs.erofs {{ work_dir }}/stemfs.erofs .
 
+create-disk:
+    mkdir -p disk/efi
+    mkdir -p disk/stem
 
-create-iso:
-    # Remove old isoimage if it exists
-    rm -rf "{{ isoimage }}"
-    rm -rf woven.iso
+    # remove old disk if it exists
+    rm -rf disk.qcow2
+
+    qemu-img create -f qcow2 disk.qcow2 10G
+    sudo qemu-nbd --connect /dev/nbd0 disk.qcow2
+
+    sudo parted /dev/nbd0 mklabel gpt 
+    sudo parted /dev/nbd0 mkpart "BOOT" fat32 1MiB 301MiB 
+    sudo parted /dev/nbd0 mkpart "ROOT" f2fs 301MiB 100%
+
+    sudo mkfs.fat -F32 /dev/nbd0p1
+    sudo mkfs.f2fs -f -l ROOT -O extra_attr,inode_checksum,sb_checksum /dev/nbd0p2
+    sudo mount /dev/nbd0p1 disk/efi -o uid=$UID,gid=$(id -g)
+    sudo mount /dev/nbd0p2 disk/stem
+
+    sudo chown -R fede:fede disk/stem
 
     # Create directory for boot files
-    mkdir -p "{{ isoimage }}"/boot
+    mkdir -p disk/efi/boot
 
     # Copy the actual kernel
-    cp "{{ kernel_sources }}"/arch/x86/boot/bzImage "{{ isoimage }}"/boot/kernel.img
+    cp "{{ kernel_sources }}"/arch/x86/boot/bzImage disk/efi/boot/kernel.img
 
     # Copy the initramfs image
-    cp "{{ work_dir }}"/rootfs.img "{{ isoimage }}"/boot/rootfs.img
-    cp "{{ work_dir }}"/stemfs.erofs "{{ isoimage }}"/stemfs.erofs
+    cp "{{ work_dir }}"/rootfs.img disk/efi/boot/rootfs.img
+    cp -r "{{ work_dir }}"/stemfs/* disk/stem
 
     # Copy all limine stuff
-    cp "{{ limine_sources }}"/bin/limine-uefi-cd.bin "{{ isoimage }}"/boot
-    cp "{{ limine_sources }}"/bin/limine-bios-cd.bin "{{ isoimage }}"/boot
-    cp "{{ limine_sources }}"/bin/limine-bios.sys "{{ isoimage }}"/boot
-    cp limine.cfg "{{ isoimage }}"/boot
+    cp "{{ limine_sources }}"/bin/limine-uefi-cd.bin disk/efi/boot
+    cp "{{ limine_sources }}"/bin/limine-bios-cd.bin disk/efi/boot
+    cp "{{ limine_sources }}"/bin/limine-bios.sys disk/efi/boot
+    cp limine.cfg disk/efi/boot
 
-    mkdir -p "{{ isoimage }}"/EFI/BOOT
-    cp "{{ limine_sources }}"/bin/BOOTX64.EFI "{{ isoimage }}"/EFI/BOOT
+    mkdir -p disk/efi/EFI/BOOT
+    cp "{{ limine_sources }}"/bin/BOOTX64.EFI disk/efi/EFI/BOOT
 
-    # Create iso
-    xorriso -as mkisofs -b boot/limine-bios-cd.bin \
-        -no-emul-boot -boot-load-size 4 -boot-info-table \
-        --efi-boot boot/limine-uefi-cd.bin \
-        -efi-boot-part --efi-boot-image --protective-msdos-label \
-        "{{ isoimage }}" -o "{{ src }}"/woven.iso
-
-    # Ensure the iso is bootable
-    "{{ limine_sources }}"/bin/limine bios-install woven.iso
+    sudo umount -R disk/efi
+    sudo umount -R disk/stem
+    sudo qemu-nbd --disconnect /dev/nbd0
 
 clean:
     rm -rf work
-    rm -rf woven.iso
+    rm -rf disk
+    rm -rf disk.qcow2
 
     -cd "{{ kernel_sources }}" &&  make mrproper
     -cd "{{ busybox_sources }}" && make mrproper
