@@ -37,11 +37,9 @@ _configure-kernel:
     
     make ARCH=x86_64 LLVM="{{ llvm_bin }}" defconfig
 
-    {{ config_script }} --disable LTO_CLANG_FULL
-    {{ config_script }} --disable LTO_NONE
     {{ config_script }} --enable LTO_CLANG_THIN
 
-    # {{ config_script }} --enable KERNEL_ZSTD
+    {{ config_script }} --enable KERNEL_ZSTD
 
     {{ config_script }} --enable EROFS_FS
     {{ config_script }} --enable F2FS_FS
@@ -50,15 +48,7 @@ _configure-kernel:
     {{ config_script }} --enable DRM_VIRTIO_GPU
     {{ config_script }} --enable DRM_VIRTIO_GPU_KMS
     {{ config_script }} --enable DRM_FBDEV_EMULATION
-    {{ config_script }} --enable DRM_KMS_HELPER
-    {{ config_script }} --enable FB_CORE
-    {{ config_script }} --enable FB_DEVICE
     {{ config_script }} --enable FRAMEBUFFER_CONSOLE
-    {{ config_script }} --disable FRAMEBUFFER_CONSOLE_LEGACY_ACCELERATION
-    {{ config_script }} --disable FRAMEBUFFER_CONSOLE_ROTATION
-    {{ config_script }} --set-val DRM_FBDEV_OVERALLOC 100
-    {{ config_script }} --disable LOGO
-    {{ config_script }} --enable FONTS
     
     make ARCH=x86_64 LLVM="{{ llvm_bin }}" olddefconfig   
 
