@@ -10,3 +10,6 @@ sources
 
 # qemu stuff
 OVMF_VARS.fd
+
+disk
+disk.qcow2

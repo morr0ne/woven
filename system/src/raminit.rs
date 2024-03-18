@@ -75,21 +75,10 @@ fn mount_system() -> Result<()> {
 
     mount_none(c"/dev/pts", c"devpts", None)?;
 
-    mkdir(c"/isomount", Mode::empty())?;
     mount2(
-        Some(c"/dev/sr0"),
-        c"/isomount",
-        Some(c"iso9660"),
-        MountFlags::RDONLY,
-        None,
-    )?;
-
-    loop_device(c"/isomount/stemfs.erofs")?;
-
-    mount2(
-        Some(c"/dev/loop0"),
+        Some(c"/dev/vda2"),
         c"/stem",
-        Some(c"erofs"),
+        Some(c"f2fs"),
         MountFlags::RDONLY,
         None,
     )?;
