@@ -1,8 +1,8 @@
 [linux]
-url = "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.8.tar.xz"
+url = "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.8.1.tar.xz"
 target = "linux.tar.xz"
-version = "6.8"
-hash = "c80ec542d0a355ae97d2f9121a1a0530279b02b76fa80b5caf4382a30d3eb92b"
+version = "6.8.1"
+hash = "57aefbf27cc53fa1e6e344042d26ef8f242c67b625093185b2ce5aaeb18736f5"
 
 [busybox]
 url = "http://sources.buildroot.net/busybox/busybox-1.36.1.tar.bz2"
