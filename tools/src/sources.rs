@@ -29,6 +29,13 @@ async fn main() -> Result<()> {
     let file = fs::read_to_string("sources.toml")?;
     let sources: IndexMap<String, Source> = toml::from_str(&file)?;
 
+    let args: Vec<String> = std::env::args().collect();
+
+    if let Some(source) = args.get(1) {
+        print!("{}", sources[source].version);
+        return Ok(());
+    }
+
     fs::create_dir_all("sources/tar")?;
 
     let client = Client::new();

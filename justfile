@@ -1,10 +1,10 @@
 src := `pwd`
-kernel_version := "6.8.1"
-busybox_version := "1.36.1"
-dash_version := "0.5.12"
-limine_version := "7.0.5"
-mesa_version := "24.0.2"
-llvm_version := "18.1.0"
+kernel_version := `cargo run --quiet --release --bin woven-sources -- linux`
+busybox_version := `cargo run --quiet --release --bin woven-sources -- busybox`
+dash_version := `cargo run --quiet --release --bin woven-sources -- dash`
+limine_version := `cargo run --quiet --release --bin woven-sources -- limine`
+mesa_version := `cargo run --quiet --release --bin woven-sources -- mesa`
+llvm_version := `cargo run --quiet --release --bin woven-sources -- llvm`
 kernel_sources := src / "sources/linux/linux-" + kernel_version
 busybox_sources := src / "sources/busybox/busybox-" + busybox_version
 dash_sources := src / "sources/dash/dash-" + dash_version
