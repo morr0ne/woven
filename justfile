@@ -25,7 +25,7 @@ build: build-all pack
 pack: create-rootfs create-stemfs create-disk
 
 prepare:
-    cargo run --bin woven-sources
+    cargo run --release --bin woven-sources
     
 configure: _configure-kernel _configure-busybox _configure-dash _configure-limine
 
