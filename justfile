@@ -158,36 +158,27 @@ create-stemfs:
 
     # Remove old stemfs if it exists
     rm -rf "{{ stemfs }}"
-
-    # Go into busybox directory
-    cd "{{ busybox_sources }}"
-
-    # Create all the symlinks
-    make CONFIG_PREFIX="{{ stemfs }}" install
+    mkdir "{{ stemfs }}"
 
     # Enter rootfs
     cd "{{ stemfs }}"
 
     # Create basic filesystem
     mkdir dev
-    mkdir etc
-    mkdir lib
     mkdir proc
-    mkdir root
     mkdir sys
     mkdir tmp
-    mkdir var
+    mkdir etc
     
-    cp "{{ src }}"/inittab etc/inittab
-
-    # Copy shell
-    cp "{{ dash_sources }}"/src/dash bin/sh
+    cp "{{ src }}"/inittab etc/inittab    
 
     # Copy system manager files
     mkdir system
     cp "{{ system_target }}"/init system/init
     cp "{{ system_target }}"/uname system/uname
     cp "{{ system_target }}"/clear system/clear
+    cp "{{ busybox_sources }}"/busybox system/busybox
+    cp "{{ dash_sources }}"/src/dash system/sh
 
     # Strip everything
     # strip --strip-all $ROOTFS/bin/* $ROOTFS/sbin/*

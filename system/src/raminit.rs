@@ -58,9 +58,9 @@ fn switch_root() -> Result<()> {
     chroot(c".")?;
     chdir(c"/")?;
 
-    let argv: &[*const c_char] = &[c"/sbin/init".as_ptr(), null()];
-
-    let err = unsafe { execve(c"/sbin/init", argv.as_ptr(), null()) };
+    let argv: &[*const c_char] = &[c"/system/busybox".as_ptr(), c"init".as_ptr(), null()];
+    
+    let err = unsafe { execve(c"/system/busybox", argv.as_ptr(), null()) };
 
     return Err(err);
 }
