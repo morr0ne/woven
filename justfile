@@ -158,7 +158,6 @@ create-stemfs:
 
     # Remove old stemfs if it exists
     rm -rf "{{ stemfs }}"
-    rm -rf "{{ work_dir }}"/stemfs.erofs
 
     # Go into busybox directory
     cd "{{ busybox_sources }}"
@@ -192,9 +191,6 @@ create-stemfs:
 
     # Strip everything
     # strip --strip-all $ROOTFS/bin/* $ROOTFS/sbin/*
-
-    # Pack stemfs
-    mkfs.erofs {{ work_dir }}/stemfs.erofs .
 
 create-disk:
     mkdir -p disk/efi
