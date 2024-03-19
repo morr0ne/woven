@@ -76,6 +76,7 @@ _configure-busybox:
     {{ config_script }} --enable WHICH
     {{ config_script }} --enable DMESG
     {{ config_script }} --enable LESS
+    {{ config_script }} --enable ECHO
     {{ config_script }} --enable BLKID
     {{ config_script }} --enable FEATURE_BLKID_TYPE
 
