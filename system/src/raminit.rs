@@ -69,6 +69,7 @@ fn mount_system() -> Result<()> {
     mount_none(c"/proc", c"proc", None)?;
     mount_none(c"/tmp", c"tmpfs", Some(c"mode=1777"))?;
     mount_none(c"/sys", c"sysfs", None)?;
+    mount_none(c"/disk", c"tmpfs", None)?;
 
     mkdir(c"/dev/pts", Mode::empty())?;
 
@@ -94,6 +95,7 @@ fn mount_system() -> Result<()> {
     mount_move(c"/sys", c"/stem/sys")?;
     mount_move(c"/proc", c"/stem/proc")?;
     mount_move(c"/tmp", c"/stem/tmp")?;
+    mount_move(c"/disk", c"/stem/disk")?;
 
     Ok(())
 }
