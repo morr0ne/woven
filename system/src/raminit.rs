@@ -10,8 +10,8 @@
 use core::{ffi::c_char, ptr::null};
 
 use rustix::{
-    fs::{mkdir, open, Mode, OFlags},
-    io::Result,
+    fs::{mkdir, open, stat, Mode, OFlags},
+    io::{Errno, Result},
     ioctl::ioctl,
     mount::{mount2, mount_move, mount_none, MountFlags},
     path::Arg,
@@ -59,7 +59,6 @@ fn switch_root() -> Result<()> {
     chdir(c"/")?;
 
     let argv: &[*const c_char] = &[c"/system/busybox".as_ptr(), c"init".as_ptr(), null()];
-    
     let err = unsafe { execve(c"/system/busybox", argv.as_ptr(), null()) };
 
     return Err(err);
@@ -74,6 +73,14 @@ fn mount_system() -> Result<()> {
     mkdir(c"/dev/pts", Mode::empty())?;
 
     mount_none(c"/dev/pts", c"devpts", None)?;
+
+    loop {
+        match stat(c"/dev/vda2") {
+            Ok(_) => break,
+            Err(Errno::NOENT) => continue,
+            Err(err) => return Err(err),
+        }
+    }
 
     mount2(
         Some(c"/dev/vda2"),
