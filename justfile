@@ -18,11 +18,9 @@ stemfs := work_dir / "stemfs"
 isoimage := work_dir / "isoimage"
 system_target := src / "system/target/x86_64-unknown-linux-none/release"
 
-all: prepare configure build
+all: prepare configure build-all pack
 
-build: build-all pack
-
-pack: create-rootfs create-stemfs create-disk
+pack: create-rootfs create-stemfs
 
 prepare:
     cargo run --release --bin woven-sources
@@ -186,80 +184,52 @@ create-stemfs:
     # Strip everything
     # strip --strip-all $ROOTFS/bin/* $ROOTFS/sbin/*
 
-create-disk:
+create-device device part1 part2:
     mkdir -p disk/efi
     mkdir -p disk/stem
 
+    sudo parted --script "{{ device }}" mklabel gpt 
+    sudo parted --script "{{ device }}" mkpart "BOOT" fat32 1MiB 301MiB 
+    sudo parted --script "{{ device }}" mkpart "ROOT" f2fs 301MiB 100%
+
+    sudo mkfs.fat -F32 "{{ part1 }}"
+    sudo mkfs.f2fs -f -l ROOT -O extra_attr,inode_checksum,sb_checksum "{{ part2 }}"
+    sudo mount "{{ part1 }}" disk/efi -o uid=$UID,gid=$(id -g)
+    sudo mount "{{ part2 }}" disk/stem
+
+    sudo chown -R fede:fede disk/stem
+
+    # Create directory for boot files
+    mkdir -p disk/efi/boot
+
+    # Copy the actual kernel
+    cp "{{ kernel_sources }}"/arch/x86/boot/bzImage disk/efi/boot/kernel.img
+
+    # Copy the initramfs image
+    cp "{{ work_dir }}"/rootfs.img disk/efi/boot/rootfs.img
+    cp -r "{{ work_dir }}"/stemfs/* disk/stem
+
+    # Copy limine config
+    cp limine.cfg disk/efi/boot
+
+    mkdir -p disk/efi/EFI/BOOT
+    cp "{{ limine_sources }}"/bin/BOOTX64.EFI disk/efi/EFI/BOOT
+
+    sudo umount -R disk/efi
+    sudo umount -R disk/stem
+    
+create-disk:
     # remove old disk if it exists
     rm -rf disk.qcow2
 
     qemu-img create -f qcow2 disk.qcow2 10G
     sudo qemu-nbd --connect /dev/nbd0 disk.qcow2
 
-    sudo parted --script /dev/nbd0 mklabel gpt 
-    sudo parted --script /dev/nbd0 mkpart "BOOT" fat32 1MiB 301MiB 
-    sudo parted --script /dev/nbd0 mkpart "ROOT" f2fs 301MiB 100%
+    just create-device /dev/nbd0 /dev/nbd0p1 /dev/nbd0p2
 
-    sudo mkfs.fat -F32 /dev/nbd0p1
-    sudo mkfs.f2fs -f -l ROOT -O extra_attr,inode_checksum,sb_checksum /dev/nbd0p2
-    sudo mount /dev/nbd0p1 disk/efi -o uid=$UID,gid=$(id -g)
-    sudo mount /dev/nbd0p2 disk/stem
-
-    sudo chown -R fede:fede disk/stem
-
-    # Create directory for boot files
-    mkdir -p disk/efi/boot
-
-    # Copy the actual kernel
-    cp "{{ kernel_sources }}"/arch/x86/boot/bzImage disk/efi/boot/kernel.img
-
-    # Copy the initramfs image
-    cp "{{ work_dir }}"/rootfs.img disk/efi/boot/rootfs.img
-    cp -r "{{ work_dir }}"/stemfs/* disk/stem
-
-    # Copy limine config
-    cp limine.cfg disk/efi/boot
-
-    mkdir -p disk/efi/EFI/BOOT
-    cp "{{ limine_sources }}"/bin/BOOTX64.EFI disk/efi/EFI/BOOT
-
-    sudo umount -R disk/efi
-    sudo umount -R disk/stem
     sudo qemu-nbd --disconnect /dev/nbd0
 
-create-usb:
-    mkdir -p disk/efi
-    mkdir -p disk/stem
-
-    sudo parted --script /dev/sda mklabel gpt 
-    sudo parted --script /dev/sda mkpart "BOOT" fat32 1MiB 301MiB 
-    sudo parted --script /dev/sda mkpart "ROOT" f2fs 301MiB 100%
-
-    sudo mkfs.fat -F32 /dev/sda1
-    sudo mkfs.f2fs -f -l ROOT -O extra_attr,inode_checksum,sb_checksum /dev/sda2
-    sudo mount /dev/sda1 disk/efi -o uid=$UID,gid=$(id -g)
-    sudo mount /dev/sda2 disk/stem
-
-    sudo chown -R fede:fede disk/stem
-
-    # Create directory for boot files
-    mkdir -p disk/efi/boot
-
-    # Copy the actual kernel
-    cp "{{ kernel_sources }}"/arch/x86/boot/bzImage disk/efi/boot/kernel.img
-
-    # Copy the initramfs image
-    cp "{{ work_dir }}"/rootfs.img disk/efi/boot/rootfs.img
-    cp -r "{{ work_dir }}"/stemfs/* disk/stem
-
-    # Copy limine config
-    cp limine.cfg disk/efi/boot
-
-    mkdir -p disk/efi/EFI/BOOT
-    cp "{{ limine_sources }}"/bin/BOOTX64.EFI disk/efi/EFI/BOOT
-
-    sudo umount -R disk/efi
-    sudo umount -R disk/stem
+create-usb: (create-device "/dev/sda" "/dev/sda1" "/dev/sda2")
 
 clean:
     rm -rf work
