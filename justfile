@@ -145,6 +145,7 @@ create-rootfs:
     mkdir proc
     mkdir sys
     mkdir tmp
+    mkdir disk
     mkdir stem
 
     cp "{{ system_target }}"/raminit raminit
@@ -169,6 +170,7 @@ create-stemfs:
     mkdir proc
     mkdir sys
     mkdir tmp
+    mkdir disk
     mkdir etc
     
     cp "{{ src }}"/inittab etc/inittab    
