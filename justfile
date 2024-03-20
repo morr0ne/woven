@@ -90,7 +90,7 @@ _configure-dash:
     ./configure --enable-static CFLAGS="-O2"
 
 _configure-limine:
-    cd "{{ limine_sources }}" && ./configure --enable-uefi-x86-64 --enable-bios-cd --enable-uefi-cd --enable-bios
+    cd "{{ limine_sources }}" && ./configure --enable-uefi-x86-64
 _configure-mesa:
     #!/usr/bin/env bash
     set -euxo pipefail
@@ -150,6 +150,8 @@ create-rootfs:
     mkdir stem
 
     cp "{{ system_target }}"/raminit raminit
+    # cp "{{ busybox_sources }}"/busybox busybox
+    # cp "{{ dash_sources }}"/src/dash sh
 
     find . | bsdcpio -R root:root -H newc -o | zstd -22 --ultra --long --quiet --stdout >"{{ work_dir }}"/rootfs.img
 
@@ -215,10 +217,7 @@ create-disk:
     cp "{{ work_dir }}"/rootfs.img disk/efi/boot/rootfs.img
     cp -r "{{ work_dir }}"/stemfs/* disk/stem
 
-    # Copy all limine stuff
-    cp "{{ limine_sources }}"/bin/limine-uefi-cd.bin disk/efi/boot
-    cp "{{ limine_sources }}"/bin/limine-bios-cd.bin disk/efi/boot
-    cp "{{ limine_sources }}"/bin/limine-bios.sys disk/efi/boot
+    # Copy limine config
     cp limine.cfg disk/efi/boot
 
     mkdir -p disk/efi/EFI/BOOT
@@ -253,10 +252,7 @@ create-usb:
     cp "{{ work_dir }}"/rootfs.img disk/efi/boot/rootfs.img
     cp -r "{{ work_dir }}"/stemfs/* disk/stem
 
-    # Copy all limine stuff
-    cp "{{ limine_sources }}"/bin/limine-uefi-cd.bin disk/efi/boot
-    cp "{{ limine_sources }}"/bin/limine-bios-cd.bin disk/efi/boot
-    cp "{{ limine_sources }}"/bin/limine-bios.sys disk/efi/boot
+    # Copy limine config
     cp limine.cfg disk/efi/boot
 
     mkdir -p disk/efi/EFI/BOOT
