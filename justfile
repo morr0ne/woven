@@ -95,7 +95,7 @@ _configure-mesa:
 
     cd "{{ mesa_sources }}"
 
-    meson setup build \
+    CC=clang CXX=clang++ meson setup build \
         -D platforms=wayland \
         -D glx=disabled \
         -D egl=enabled \
