@@ -5,13 +5,13 @@ use std::{
 };
 
 use anyhow::{bail, Result};
-use blake3::Hasher;
 use bzip2::read::BzDecoder;
 use camino::Utf8Path;
 use flate2::read::GzDecoder;
 use indicatif::ProgressBar;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256 as Sha256Hasher};
 use tar::Archive;
 use xz2::read::XzDecoder;
 
@@ -71,7 +71,7 @@ async fn main() -> Result<()> {
 async fn download_source(client: &Client, source: &Source) -> Result<()> {
     let target_path: String = format!("sources/tar/{}", source.target);
 
-    if Path::new(&target_path).exists() && hash_path(&target_path)? == source.hash {
+    if Path::new(&target_path).exists() && check_hash(&target_path, &source.hash)? {
         return Ok(());
     }
 
@@ -94,12 +94,17 @@ async fn download_source(client: &Client, source: &Source) -> Result<()> {
     Ok(())
 }
 
-fn hash_path(path: &str) -> io::Result<String> {
-    let mut hasher = Hasher::new();
-    hasher.update_reader(File::open(path)?)?;
-    let hash = hasher.finalize();
+fn check_hash(path: &str, hash: &str) -> Result<bool> {
+    let file = fs::read(path)?;
+    let (hash_type, hash) = hash.split_once(':').unwrap_or(("blake3", hash));
 
-    Ok(hash.to_hex().to_string())
+    let computed_hash = match hash_type {
+        "blake3" => blake3::hash(&file).to_hex().to_string(),
+        "sha256" => base16ct::lower::encode_string(Sha256Hasher::digest(&file).as_slice()),
+        _ => bail!("Unsupported hash"),
+    };
+
+    Ok(hash == computed_hash)
 }
 
 async fn extract_source(source: &Source) -> Result<()> {
