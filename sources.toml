@@ -21,17 +21,17 @@ hash = "f38a283332d2b34058112fe4f06d2148f2318610e08ad23bd70c2e206db505eb"
 
 [[sources]]
 name = "limine"
-url = "https://github.com/limine-bootloader/limine/releases/download/v7.0.5/limine-7.0.5.tar.xz"
-target = "limine.tar.xz"
-version = "7.0.5"
-hash = "1c2fa29c9ddfa510a338ccb6b8764b9acdf948405f231e2ef316a03a1f04a7e0"
+url = "https://github.com/limine-bootloader/limine/releases/download/v7.3.1/limine-7.3.1.tar.bz2"
+target = "limine.tar.bz2"
+version = "7.3.1"
+hash = "f4d2df7bb35ba650b2e1d124249911bce6dae88dbe70fec83b91e2f0741245d0"
 
 [[sources]]
 name = "llvm"
-url = "https://cdn.kernel.org/pub/tools/llvm/files/llvm-18.1.0-x86_64.tar.xz"
+url = "https://cdn.kernel.org/pub/tools/llvm/files/llvm-18.1.3-x86_64.tar.xz"
 target = "llvm.tar.xz"
-version = "18.1.0"
-hash = "47621ffec1535e6ecbf50c27daec8d77d95d34622e633932ec00e1298c9734ad"
+version = "18.1.3"
+hash = "sha256:0c73a4c6f26f27a173cd4b9edcd6b83b2958dc420afd8588937c0db686160409"
 
 [[sources]]
 name = "mesa"
