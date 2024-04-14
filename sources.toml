@@ -3,7 +3,7 @@ name = "linux"
 url = "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.8.6.tar.xz"
 target = "linux.tar.xz"
 version = "6.8.6"
-hash = "57aefbf27cc53fa1e6e344042d26ef8f242c67b625093185b2ce5aaeb18736f5"
+hash = "sha256:9e723232d603ab45ebf043c34714c48f277ab195c29abcb8472f2a4c3a5a1995"
 
 [[sources]]
 name = "busybox"
