@@ -1,10 +1,10 @@
 src := `pwd`
-kernel_version := `cargo run --quiet --release --bin woven-sources -- linux`
-busybox_version := `cargo run --quiet --release --bin woven-sources -- busybox`
-dash_version := `cargo run --quiet --release --bin woven-sources -- dash`
-limine_version := `cargo run --quiet --release --bin woven-sources -- limine`
-mesa_version := `cargo run --quiet --release --bin woven-sources -- mesa`
-llvm_version := `cargo run --quiet --release --bin woven-sources -- llvm`
+kernel_version := `woven-sources linux`
+busybox_version := `woven-sources busybox`
+dash_version := `woven-sources dash`
+limine_version := `woven-sources limine`
+mesa_version := `woven-sources mesa`
+llvm_version := `woven-sources llvm`
 kernel_sources := src / "sources/linux/linux-" + kernel_version
 busybox_sources := src / "sources/busybox/busybox-" + busybox_version
 dash_sources := src / "sources/dash/dash-" + dash_version
@@ -23,7 +23,7 @@ all: prepare configure build-all pack
 pack: create-rootfs create-stemfs
 
 prepare:
-    cargo run --release --bin woven-sources
+    woven-sources
     
 configure: _configure-kernel _configure-busybox _configure-dash _configure-limine
 
@@ -126,7 +126,7 @@ _build-mesa:
     cd "{{ mesa_sources }}" && meson compile -C build
 
 build-system:
-    cd system && cargo build --release --target x86_64-unknown-linux-none.json
+    cd system && cargo +stage2 build --release --target x86_64-unknown-linux-none
 
 create-rootfs:
     #!/usr/bin/env bash
@@ -185,53 +185,52 @@ create-stemfs:
 
     # Strip everything
     # strip --strip-all $ROOTFS/bin/* $ROOTFS/sbin/*
-
-create-device device part1 part2:
-    mkdir -p disk/efi
-    mkdir -p disk/stem
-
-    sudo parted --script "{{ device }}" mklabel gpt 
-    sudo parted --script "{{ device }}" mkpart "BOOT" fat32 1MiB 301MiB 
-    sudo parted --script "{{ device }}" mkpart "ROOT" f2fs 301MiB 100%
-
-    sudo mkfs.fat -F32 "{{ part1 }}"
-    sudo mkfs.f2fs -f -l ROOT -O extra_attr,inode_checksum,sb_checksum "{{ part2 }}"
-    sudo mount "{{ part1 }}" disk/efi -o uid=$UID,gid=$(id -g)
-    sudo mount "{{ part2 }}" disk/stem
-
-    sudo chown -R fede:fede disk/stem
-
-    # Create directory for boot files
-    mkdir -p disk/efi/boot
-
-    # Copy the actual kernel
-    cp "{{ kernel_sources }}"/arch/x86/boot/bzImage disk/efi/boot/kernel.img
-
-    # Copy the initramfs image
-    cp "{{ work_dir }}"/rootfs.img disk/efi/boot/rootfs.img
-    cp -r "{{ work_dir }}"/stemfs/* disk/stem
-
-    # Copy limine config
-    cp limine.cfg disk/efi/boot
-
-    mkdir -p disk/efi/EFI/BOOT
-    cp "{{ limine_sources }}"/bin/BOOTX64.EFI disk/efi/EFI/BOOT
-
-    sudo umount -R disk/efi
-    sudo umount -R disk/stem
     
 create-disk:
-    # remove old disk if it exists
-    rm -rf disk.qcow2
+    #!/usr/bin/guestfish -f
+    echo "Creating image"
+    disk-create disk.qcow2 qcow2 10G
+    add disk.qcow2
+    run
 
-    qemu-img create -f qcow2 disk.qcow2 10G
-    sudo qemu-nbd --connect /dev/nbd0 disk.qcow2
+    echo "Partitioning image"
+    part_init /dev/sda gpt
+    part_add /dev/sda primary 2048 2099199
+    part_add /dev/sda primary 2099200 -2048
+    part-set-gpt-type /dev/sda 1 C12A7328-F81F-11D2-BA4B-00A0C93EC93B 
+    part-set-gpt-type /dev/sda 2 4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709
 
-    just create-device /dev/nbd0 /dev/nbd0p1 /dev/nbd0p2
+    echo "Formatting partitions"
+    mkfs vfat /dev/sda1
+    mkfs f2fs /dev/sda2 features:extra_attr,inode_checksum,sb_checksum
 
-    sudo qemu-nbd --disconnect /dev/nbd0
+    echo "Mounting efi partition"
+    mount /dev/sda1 /
+    mkdir /boot
+    mkdir-p /EFI/BOOT
 
-create-usb: (create-device "/dev/sda" "/dev/sda1" "/dev/sda2")
+    echo "Copying to efi partition"
+    copy-in {{ kernel_sources }}/arch/x86/boot/bzImage /boot
+    mv /boot/bzImage /boot/kernel.img
+    copy-in {{ work_dir }}/rootfs.img /boot
+    copy-in {{ limine_sources }}/bin/BOOTX64.EFI /EFI/BOOT
+    copy-in limine.cfg /boot
+
+    echo "Unmounting efi partition"
+    umount /
+
+    echo "Mounting stem partition"
+    mount /dev/sda2 /
+    
+    # FIXME: figure out how to use globbing here
+    echo "Copying to stem partition"
+    copy-in {{ work_dir }}/stemfs/dev /
+    copy-in {{ work_dir }}/stemfs/disk /
+    copy-in {{ work_dir }}/stemfs/etc /
+    copy-in {{ work_dir }}/stemfs/proc /
+    copy-in {{ work_dir }}/stemfs/sys /
+    copy-in {{ work_dir }}/stemfs/system /
+    copy-in {{ work_dir }}/stemfs/tmp /
 
 clean:
     rm -rf work
