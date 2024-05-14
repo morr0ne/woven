@@ -60,15 +60,11 @@ _configure-busybox:
 
     {{ config_script }} --set-str EXTRA_CFLAGS "-O2"
     {{ config_script }} --enable STATIC
-    {{ config_script }} --enable INIT
-    {{ config_script }} --enable FEATURE_USE_INITTAB
     {{ config_script }} --disable SH_IS_ASH
     {{ config_script }} --enable SH_IS_NONE
-    {{ config_script }} --enable CTTYHACK
     {{ config_script }} --enable MOUNT
     {{ config_script }} --enable CP
     {{ config_script }} --enable MKDIR
-    {{ config_script }} --enable SWITCH_ROOT
     {{ config_script }} --enable LS
     {{ config_script }} --enable DU
     {{ config_script }} --enable WHICH
@@ -173,8 +169,6 @@ create-stemfs:
     mkdir disk
     mkdir etc
     
-    cp "{{ src }}"/inittab etc/inittab    
-
     # Copy system manager files
     mkdir system
     cp "{{ system_target }}"/init system/init
