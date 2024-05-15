@@ -23,6 +23,10 @@ name = "init"
 path = "src/init.rs"
 
 [[bin]]
+name = "ls"
+path = "src/ls.rs"
+
+[[bin]]
 name = "linker"
 path = "src/linker.rs"
 

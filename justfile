@@ -174,6 +174,7 @@ create-stemfs:
     cp "{{ system_target }}"/init system/init
     cp "{{ system_target }}"/uname system/uname
     cp "{{ system_target }}"/clear system/clear
+    cp "{{ system_target }}"/ls system/ls
     cp "{{ busybox_sources }}"/busybox system/busybox
     cp "{{ dash_sources }}"/src/dash system/sh
 
