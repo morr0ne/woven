@@ -1,10 +1,10 @@
 src := `pwd`
-kernel_version := `woven-sources linux`
-busybox_version := `woven-sources busybox`
-dash_version := `woven-sources dash`
-limine_version := `woven-sources limine`
-mesa_version := `woven-sources mesa`
-llvm_version := `woven-sources llvm`
+kernel_version := `sugo linux`
+busybox_version := `sugo busybox`
+dash_version := `sugo dash`
+limine_version := `sugo limine`
+mesa_version := `sugo mesa`
+llvm_version := `sugo llvm`
 kernel_sources := src / "sources/linux/linux-" + kernel_version
 busybox_sources := src / "sources/busybox/busybox-" + busybox_version
 dash_sources := src / "sources/dash/dash-" + dash_version
@@ -16,14 +16,14 @@ work_dir := src / "work"
 rootfs := work_dir / "rootfs"
 stemfs := work_dir / "stemfs"
 isoimage := work_dir / "isoimage"
-system_target := src / "system/target/x86_64-unknown-linux-none/release"
+system_target := src / "target/x86_64-unknown-linux-none/release"
 
 all: prepare configure build-all pack
 
 pack: create-rootfs create-stemfs
 
 prepare:
-    woven-sources
+    sugo
     
 configure: _configure-kernel _configure-busybox _configure-dash _configure-limine
 
@@ -122,7 +122,7 @@ _build-mesa:
     cd "{{ mesa_sources }}" && meson compile -C build
 
 build-system:
-    cd system && cargo build --release
+    cargo build --release
 
 create-rootfs:
     #!/usr/bin/env bash
@@ -236,8 +236,6 @@ clean:
     -cd "{{ dash_sources }}" && make clean
     -cd "{{ limine_sources}}" && make clean
     
-    cd system && cargo clean
-
     cargo clean
 
 qemu:
