@@ -3,12 +3,6 @@ name = "system"
 version = "0.1.0"
 edition = "2021"
 
-[profile.release]
-lto = true
-codegen-units = 1
-strip = true
-panic = "abort"
-
 [dependencies]
 linux-raw-sys = { git = "https://github.com/morr0ne/linux-raw-sys.git", branch = "loop", version = "0.6.4", features = [
     "loop_device",
