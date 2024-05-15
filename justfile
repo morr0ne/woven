@@ -122,7 +122,7 @@ _build-mesa:
     cd "{{ mesa_sources }}" && meson compile -C build
 
 build-system:
-    cd system && cargo +stage2 build --release
+    cd system && cargo build --release
 
 create-rootfs:
     #!/usr/bin/env bash
