@@ -59,7 +59,8 @@ fn switch_root() -> Result<()> {
     chdir(c"/")?;
 
     let argv: &[*const c_char] = &[c"/system/sh".as_ptr(), null()];
-    let err = unsafe { execve(c"/system/sh", argv.as_ptr(), null()) };
+    let envp: &[*const c_char] = &[c"PATH=/system".as_ptr(), null()];
+    let err = unsafe { execve(c"/system/sh", argv.as_ptr(), envp.as_ptr()) };
 
     return Err(err);
 }
