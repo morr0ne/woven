@@ -11,10 +11,8 @@ fn panic(_panic: &core::panic::PanicInfo<'_>) -> ! {
 }
 
 fn main() -> i32 {
-   0
+    0
 }
-
-
 
 #[naked]
 #[no_mangle]
