@@ -16,8 +16,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install sugo
+        run: cargo install --git https://github.com/morr0ne/sugo.git
+
       - name: Build image
         run: just
+
+      - name: Build qemu disk
+        run: just create-disk
 
       # - name: Upload image
       #   uses: actions/upload-artifact@v4
