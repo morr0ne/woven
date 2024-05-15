@@ -1,9 +1,9 @@
 [[sources]]
 name = "linux"
-url = "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.8.9.tar.xz"
+url = "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.9.tar.xz"
 target = "linux.tar.xz"
-version = "6.8.9"
-hash = "sha256:f905f1238ea7a8e85314bacf283302e8097006010d25fcea726d0de0ea5bc9b6"
+version = "6.9"
+hash = "sha256:24fa01fb989c7a3e28453f117799168713766e119c5381dac30115f18f268149"
 
 [[sources]]
 name = "busybox"
@@ -21,10 +21,10 @@ hash = "f38a283332d2b34058112fe4f06d2148f2318610e08ad23bd70c2e206db505eb"
 
 [[sources]]
 name = "limine"
-url = "https://github.com/limine-bootloader/limine/releases/download/v7.3.1/limine-7.3.1.tar.bz2"
+url = "https://github.com/limine-bootloader/limine/releases/download/v7.5.1/limine-7.5.1.tar.bz2"
 target = "limine.tar.bz2"
-version = "7.3.1"
-hash = "f4d2df7bb35ba650b2e1d124249911bce6dae88dbe70fec83b91e2f0741245d0"
+version = "7.5.1"
+hash = "4a262b88f45392f8dffbee948fcffeec167b25c4182c992b84fa1c79094dea11"
 
 [[sources]]
 name = "llvm"
