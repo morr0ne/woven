@@ -19,6 +19,9 @@ jobs:
       - name: Install sugo
         run: cargo install --git https://github.com/morr0ne/sugo.git
 
+      - name: Add sugo to path
+        run: cp ~/.cargo/bin/sugo /usr/local/bin
+
       - name: Build image
         run: just
 
