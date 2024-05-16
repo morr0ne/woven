@@ -67,7 +67,7 @@ dependencies = [
 name = "rt"
 version = "0.1.0"
 dependencies = [
- "rustix 0.38.34",
+ "rustix 0.38.31",
  "rustix-dlmalloc",
 ]
 

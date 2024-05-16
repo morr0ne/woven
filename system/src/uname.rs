@@ -9,10 +9,12 @@ extern crate rt;
 
 use rustix::{
     fd::AsFd,
-    io::{self, Errno},
+    io::Result,
     stdio::stdout,
     system::{uname, Uname},
 };
+
+use rt::io::write_all;
 
 #[no_mangle]
 fn main() -> i32 {
@@ -25,7 +27,7 @@ fn main() -> i32 {
     }
 }
 
-fn write_uname<Fd: AsFd>(uname: Uname, stdout: Fd) -> io::Result<()> {
+fn write_uname<Fd: AsFd>(uname: Uname, stdout: Fd) -> Result<()> {
     let stdout = stdout.as_fd();
 
     write_all(stdout, uname.sysname().to_bytes())?;
@@ -46,16 +48,5 @@ fn write_uname<Fd: AsFd>(uname: Uname, stdout: Fd) -> io::Result<()> {
     write_all(stdout, b"OS")?;
     write_all(stdout, b"\n")?;
 
-    Ok(())
-}
-
-fn write_all<Fd: AsFd>(fd: Fd, mut buf: &[u8]) -> io::Result<()> {
-    while !buf.is_empty() {
-        match io::write(fd.as_fd(), buf) {
-            Ok(n) => buf = &buf[n..],
-            Err(Errno::INTR) => {}
-            Err(e) => return Err(e),
-        }
-    }
     Ok(())
 }
