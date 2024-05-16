@@ -19,7 +19,6 @@ use rustix::{
 };
 
 #[entry]
-
 fn main() -> i32 {
     // Check if we are pid one, otherwise exit with code 1
     if !getpid().is_init() {
