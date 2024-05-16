@@ -1,0 +1,12 @@
+[package]
+name = "rt-macros"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+quote = "1.0.36"
+syn = { version = "2.0.64", features = ["full"] }
+
+
+[lib]
+proc-macro = true

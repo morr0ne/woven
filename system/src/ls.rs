@@ -13,18 +13,10 @@ use rustix::{
     stdio::stdout,
 };
 
-use rt::io::write_all;
+use rt::{entry, io::write_all};
 
-#[no_mangle]
-fn main() -> i32 {
-    if let Err(err) = run() {
-        return err.raw_os_error();
-    }
-
-    0
-}
-
-fn run() -> Result<()> {
+#[entry]
+fn main() -> Result<()> {
     let stdout = unsafe { stdout() };
 
     let dir = open(
