@@ -8,6 +8,7 @@ linux-raw-sys = { git = "https://github.com/morr0ne/linux-raw-sys.git", branch =
     "loop_device",
     "no_std",
 ], default-features = false }
+rt = { version = "0.1.0", path = "../rt" }
 rustix = { version = "0.38.31", git = "https://github.com/morr0ne/rustix.git", branch = "modernize", default-features = false, features = [
     "mount",
     "process",
@@ -18,8 +19,6 @@ rustix = { version = "0.38.31", git = "https://github.com/morr0ne/rustix.git", b
     "fs",
     "alloc"
 ] }
-rustix-dlmalloc = { version = "0.1.5", features = ["global"] }
-
 
 [[bin]]
 name = "init"

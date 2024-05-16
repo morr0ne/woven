@@ -7,6 +7,8 @@
 
 // TODO: comment everything
 
+extern crate rt;
+
 use core::{ffi::c_char, ptr::null};
 
 use rustix::{
@@ -19,21 +21,11 @@ use rustix::{
     runtime::execve,
 };
 
-use rustix_dlmalloc::GlobalDlmalloc;
-
-#[global_allocator]
-static Dlmalloc: GlobalDlmalloc = GlobalDlmalloc;
-
-
 mod loop_configure;
 
 use loop_configure::ConfigureLoop;
 
-#[panic_handler]
-fn panic(_panic: &core::panic::PanicInfo<'_>) -> ! {
-    core::intrinsics::abort()
-}
-
+#[no_mangle]
 fn main() -> i32 {
     // Make sure we actually are pid 1 otherwise stuff will go wrong
     if !getpid().is_init() {
@@ -118,22 +110,4 @@ fn loop_device<P: Arg>(file: P) -> Result<()> {
     let _output = unsafe { ioctl(&loop_device, configure_loop) }?;
 
     Ok(())
-}
-
-#[naked]
-#[no_mangle]
-unsafe extern "C" fn _start() -> ! {
-    use core::arch::asm;
-
-    fn entry() -> ! {
-        rustix::runtime::exit_group(main())
-    }
-
-    asm!(
-        "mov rdi, rsp", // Pass the incoming `rsp` as the arg to `entry`.
-        "push rbp",     // Set the return address to zero.
-        "jmp {entry}",  // Jump to `entry`.
-        entry = sym entry,
-        options(noreturn),
-    );
 }
