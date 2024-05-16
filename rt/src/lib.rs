@@ -44,10 +44,10 @@ impl Termination for () {
     }
 }
 
-impl<T, E: Termination> Termination for Result<T, E> {
+impl<T: Termination, E: Termination> Termination for Result<T, E> {
     fn exit(self) -> i32 {
         match self {
-            Ok(_) => EXIT_SUCCESS,
+            Ok(value) => value.exit(),
             Err(err) => err.exit(),
         }
     }
