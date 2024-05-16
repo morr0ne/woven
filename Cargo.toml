@@ -1,5 +1,5 @@
 [workspace]
-members = ["rt", "system"]
+members = ["rt", "rt-macros", "system"]
 resolver = "2"
 
 [profile.release]
