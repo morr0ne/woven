@@ -64,6 +64,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "rt"
+version = "0.1.0"
+dependencies = [
+ "rustix 0.38.34",
+ "rustix-dlmalloc",
+]
+
+[[package]]
 name = "rustix"
 version = "0.38.31"
 source = "git+https://github.com/morr0ne/rustix.git?branch=modernize#56832807f0cbb2f0a1b7465b79e08436d3f648b0"
@@ -121,8 +129,8 @@ name = "system"
 version = "0.1.0"
 dependencies = [
  "linux-raw-sys 0.6.4 (git+https://github.com/morr0ne/linux-raw-sys.git?branch=loop)",
+ "rt",
  "rustix 0.38.31",
- "rustix-dlmalloc",
 ]
 
 [[package]]

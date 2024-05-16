@@ -1,0 +1,8 @@
+[package]
+name = "rt"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rustix = { version = "0.38.34", default-features = false, features = ["runtime"] }
+rustix-dlmalloc = { version = "0.1.5", features = ["global"] }
