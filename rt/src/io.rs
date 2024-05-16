@@ -13,3 +13,7 @@ pub fn write_all<Fd: AsFd>(fd: Fd, mut buf: &[u8]) -> Result<()> {
     }
     Ok(())
 }
+
+pub fn write_str<Fd: AsFd>(fd: Fd, s: &str) -> Result<()> {
+    write_all(fd, s.as_bytes())
+}
