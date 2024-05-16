@@ -9,6 +9,7 @@ extern crate rt;
 
 use core::ffi::CStr;
 
+use rt::entry;
 use rustix::{
     io,
     process::getpid,
@@ -17,7 +18,7 @@ use rustix::{
     thread::{nanosleep, Timespec},
 };
 
-#[no_mangle]
+#[entry]
 
 fn main() -> i32 {
     // Check if we are pid one, otherwise exit with code 1

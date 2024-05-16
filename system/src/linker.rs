@@ -5,9 +5,9 @@
 #![feature(core_intrinsics)]
 #![feature(naked_functions)]
 
+use rt::entry;
+
 extern crate rt;
 
-#[no_mangle]
-fn main() -> i32 {
-    0
-}
+#[entry]
+fn main() {}
