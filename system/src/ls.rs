@@ -13,14 +13,19 @@ use rustix::{
     stdio::stdout,
 };
 
-use rt::{entry, io::write_all};
+use rt::{
+    entry,
+    io::{write_all, write_str},
+};
 
 #[entry]
 fn main() -> Result<()> {
+    let dir = rt::args().skip(1).next().unwrap_or(c".");
+
     let stdout = unsafe { stdout() };
 
     let dir = open(
-        c".",
+        dir,
         OFlags::RDONLY | OFlags::DIRECTORY | OFlags::CLOEXEC,
         Mode::empty(),
     )?;
@@ -34,11 +39,11 @@ fn main() -> Result<()> {
             continue;
         }
 
-        write_all(stdout, name.to_bytes_with_nul())?;
-        write_all(stdout, c"   ".to_bytes_with_nul())?;
+        write_all(stdout, name.to_bytes())?;
+        write_str(stdout, "   ")?;
     }
 
-    write_all(stdout, c"\n".to_bytes_with_nul())?;
+    write_str(stdout, "\n")?;
 
     Ok(())
 }
