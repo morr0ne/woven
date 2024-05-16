@@ -7,11 +7,9 @@
 
 extern crate rt;
 
-use rustix::{
-    fd::AsFd,
-    io::{self, Errno},
-    stdio::stdout,
-};
+use rustix::stdio::stdout;
+
+use rt::io::write_all;
 
 /*
 FIXME
@@ -29,15 +27,4 @@ fn main() -> i32 {
     } else {
         1
     }
-}
-
-fn write_all<Fd: AsFd>(fd: Fd, mut buf: &[u8]) -> io::Result<()> {
-    while !buf.is_empty() {
-        match io::write(fd.as_fd(), buf) {
-            Ok(n) => buf = &buf[n..],
-            Err(Errno::INTR) => {}
-            Err(e) => return Err(e),
-        }
-    }
-    Ok(())
 }

@@ -9,6 +9,8 @@ use core::arch::asm;
 
 use rustix_dlmalloc::GlobalDlmalloc;
 
+pub mod io;
+
 #[global_allocator]
 static DLMALLOC: GlobalDlmalloc = GlobalDlmalloc;
 

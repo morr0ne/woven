@@ -4,5 +4,14 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-rustix = { version = "0.38.34", default-features = false, features = ["runtime"] }
+rustix = { version = "0.38.31", git = "https://github.com/morr0ne/rustix.git", branch = "modernize", default-features = false, features = [
+    "mount",
+    "process",
+    "stdio",
+    "runtime",
+    "system",
+    "thread",
+    "fs",
+    "alloc",
+] }
 rustix-dlmalloc = { version = "0.1.5", features = ["global"] }

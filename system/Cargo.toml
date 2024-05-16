@@ -17,7 +17,7 @@ rustix = { version = "0.38.31", git = "https://github.com/morr0ne/rustix.git", b
     "system",
     "thread",
     "fs",
-    "alloc"
+    "alloc",
 ] }
 
 [[bin]]

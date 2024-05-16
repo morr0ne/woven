@@ -99,6 +99,7 @@ fn mount_system() -> Result<()> {
     Ok(())
 }
 
+#[allow(unused)]
 fn loop_device<P: Arg>(file: P) -> Result<()> {
     let file = open(file, OFlags::RDONLY, Mode::empty())?;
 
