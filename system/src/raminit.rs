@@ -11,6 +11,7 @@ extern crate rt;
 
 use core::{ffi::c_char, ptr::null};
 
+use rt::entry;
 use rustix::{
     fs::{mkdir, open, stat, Mode, OFlags},
     io::{Errno, Result},
@@ -25,7 +26,7 @@ mod loop_configure;
 
 use loop_configure::ConfigureLoop;
 
-#[no_mangle]
+#[entry]
 fn main() -> i32 {
     // Make sure we actually are pid 1 otherwise stuff will go wrong
     if !getpid().is_init() {

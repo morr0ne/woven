@@ -14,17 +14,15 @@ use rustix::{
     system::{uname, Uname},
 };
 
-use rt::io::write_all;
+use rt::{entry, io::write_all};
 
-#[no_mangle]
-fn main() -> i32 {
+#[entry]
+fn main() -> Result<()> {
     let stdout = unsafe { stdout() };
 
-    if write_uname(uname(), stdout).is_ok() {
-        0
-    } else {
-        1
-    }
+    write_uname(uname(), stdout)?;
+
+    Ok(())
 }
 
 fn write_uname<Fd: AsFd>(uname: Uname, stdout: Fd) -> Result<()> {
