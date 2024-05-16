@@ -16,7 +16,10 @@ rustix = { version = "0.38.31", git = "https://github.com/morr0ne/rustix.git", b
     "system",
     "thread",
     "fs",
+    "alloc"
 ] }
+rustix-dlmalloc = { version = "0.1.5", features = ["global"] }
+
 
 [[bin]]
 name = "init"

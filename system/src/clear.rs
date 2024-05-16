@@ -11,6 +11,11 @@ use rustix::{
     stdio::stdout,
 };
 
+use rustix_dlmalloc::GlobalDlmalloc;
+
+#[global_allocator]
+static Dlmalloc: GlobalDlmalloc = GlobalDlmalloc;
+
 #[panic_handler]
 fn panic(_panic: &core::panic::PanicInfo<'_>) -> ! {
     core::intrinsics::abort()

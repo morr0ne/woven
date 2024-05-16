@@ -19,6 +19,12 @@ use rustix::{
     runtime::execve,
 };
 
+use rustix_dlmalloc::GlobalDlmalloc;
+
+#[global_allocator]
+static Dlmalloc: GlobalDlmalloc = GlobalDlmalloc;
+
+
 mod loop_configure;
 
 use loop_configure::ConfigureLoop;
