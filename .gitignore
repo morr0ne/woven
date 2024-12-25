@@ -9,7 +9,7 @@ target
 sources
 
 # qemu stuff
-OVMF_VARS.fd
+OVMF_VARS.4m.fd
 
 disk
 disk.qcow2
