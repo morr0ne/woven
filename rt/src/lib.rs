@@ -6,7 +6,7 @@
 #![feature(naked_functions)]
 
 use core::{
-    arch::asm,
+    arch::naked_asm,
     ffi::{c_int, c_uint, CStr},
     ptr::null_mut,
     sync::atomic::{AtomicI32, AtomicPtr, Ordering},
@@ -84,12 +84,11 @@ pub unsafe extern "C" fn _start() -> ! {
         rustix::runtime::exit_group(unsafe { main() })
     }
 
-    asm!(
+    naked_asm!(
         "mov rdi, rsp", // Pass the incoming `rsp` as the arg to `entry`.
         "push rbp",     // Set the return address to zero.
         "jmp {entry}",  // Jump to `entry`.
         entry = sym entry,
-        options(noreturn),
     );
 }
 
